@@ -1,0 +1,24 @@
+__ Page de garde
+
+_____ _____ _____ _____ _____ _____ _____ _____ _____ _____
+
+Ce document présente un court projet de recherche et d'implémentation d'un oracle de diagnostique et de réparation automatique de bugs dans le cadre du Master 2 IAGL à Lille 1, en France.
+
+__ Sommaire
+
+_____ _____ _____ _____ _____ _____ _____ _____ _____ _____
+
+
+__ Introduction
+
+Les bugs existent depuis toujours dans les programmes informatiques et nuisent à beaucoup de développeurs. Mais qu'est ce qu'un bug? Comment peut-on les détecter? Ne pourrait-on pas les réparer automatiquement? A quoi cela sert de les corriger? 
+
+(Problème) Les bugs ont beaucoup des conséquences négatives sur les programes, d'une erreur d'affichage au crash. Cependant il arrive très souvent que leurs origines ne soient qu'une toute petite erreur dans le code. Entre autres, une valeur qui a besoin d'un +1, une condition trop faible, un paramètre mal initialisé.
+
+(Solution) Pour les détecter, il faut avoir des tests unitaires pour sécuriser son code. Lorsqu'un test ne fonctionne plus, il faut pratiquer du delta-debbugging qui consiste à retirer toute la partie de code concernée, vérifier si le test passe ou non et retirer un peu moins de code s'il ne passe toujours pas et on recommence. Ainsi, l'endroit exact du soucis est isolé et il est possible d'essayer des alternatives pour cette petite partie. En automatisant cette simple démarche il est possible d'avoir un premier programme de réparation automatique de bugs.
+
+(Conséquences) L'intérêt d'un tel programme est d'alléger la tâche du développeur. Si les bugs sont souvent simples à corriger, ils prennent énormément de temps à debbuger et à trouver et avoir un oracle qui s'occupe de cette tâche automatiquement.
+
+Nous proposons [NOM DU PROJET], un outil de diagnostic et de réparation automatique de bugs basé sur l'analyse de tests.
+
+_____ _____ _____ _____ _____ _____ _____ _____ _____ _____
