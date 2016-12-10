@@ -1,62 +1,97 @@
 import bsh.Interpreter;
+import fr.univ_lille1.m2iagl.dd.ChainElement;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.ArrayAccessExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.BinaryExpr.Operator;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ForStmt;
+import com.github.javaparser.ast.stmt.Statement;
 
 import bsh.EvalError;
 
-
 public class BeanShellExperiments {
-
-	public static void main(String[] args) throws EvalError, IOException {
-		Interpreter interpreter = new Interpreter();		
-
-		//On lit le fichier pour r√©cup√©rer son code en String
-		File tempFile = new File("");
-		//String filePath = tempFile.getAbsolutePath() + "\\src\\" + "ExampleClass.java"; //Windows
-		String filePath = tempFile.getAbsolutePath() + "/src/" + "ExampleClass.java"; //Linux
-		String javaClass = readFile(filePath);
-
-		//On compile le code de la classe
-		Class c = (Class) interpreter.eval(javaClass);
-		
-		//getAllFields(c); //Print tous les attributs de la classe
-		//getAllMethods(c); //Print toutes les m√©thodes de la classe
-		
-		//Ici il existe plusieurs moyen d'ex√©cuter le main :
-		
-		//interpreter.eval(c.getCanonicalName()+".main(null);"); //1- La fa√ßon simple puisque le main est statique
-		
-		int i = 5;
-		
-		/* 2- Sinon on peut aussi cr√©er un objet dans l'interpreteur				
-		interpreter.eval(c.getCanonicalName()+" o = new " + c.getCanonicalName() + "(" + i + ")");
-		interpreter.eval("o.main(null);");*/
-		
-		/* 3- Ou alors on instancie l'objet ici et on le donne dans l'interpreteur */
-		Object o = createObjectFromClass(c, i);
-		interpreter.set("o", o);
-		interpreter.eval("o.main(null);");
-		
-		/*
-		 * Probl√®mes :
-		 * - Le pas √† pas devient compliqu√© quand on donne toute une classe d'un coup (Pour un exemple de pas √† pas, voir les commits pr√©c√©dents qui ont √©t√© √©cras√©s
-		 * - Le logging devient difficile
-		 * 
-		 * Solutions potentielles :
-		 * - Il faudrait faire du parsing massif pour pouvoir simplifier l'ex√©cution de la classe mais c'est compliqu√© et il reste le probl√®me des instructions partielles (boucles, if, d√©lcaration de m√©thode...)
-		 * - Spoon, mais je sais pas comment m'en servir et apparament y'a des probl√®mes pour √©x√©cuter en runtime
-		 * - Trouver un moyen de pouvoir faire du debug directement en lignes de code, mais j'ai trouv√© aucune solution pour faire √ßa
-		 * - Savoir monitorer une variable pour faire des logs √† chaque fois qu'elle est modifi√©e, mais l√† pareil, j'ai rien trouv√© pour
-		 */
+	
+	private static String neededInterpretorRessources = "import java.util.ArrayList;" +
+														"import java.util.List;";
+	
+	public static Interpreter interpreter = new Interpreter();
+	
+	public void challenge(int input) {
+		int bonjour = 5;
+		input += 10;
+		input /= 2;
+		for(int i=0; i<5; i++) {
+			input += i;
+		}
+		bonjour+=1;
 	}
 	
-
+	/**
+	 * Le coeur de l'exÈcution
+	 * 
+	 * @param args
+	 * @throws EvalError
+	 * @throws IOException
+	 */
+	public static void main(String[] args) throws EvalError, IOException {
+		List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN = new ArrayList<CECElement>();
+		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN); //On donne ‡ l'interpreteur de quoi remplir sa trace
+		
+		interpreter.set("input", 5); //On ajoute l'input, ici le 5 sera ensuite en dynamique.
+		
+		//On rÈcupËre la classe o˘ se trouve la mÈthode challenge qui nous intÈresse
+		File tempFile = new File("");
+		String filePath = tempFile.getAbsolutePath() + "/src/" + "BeanShellExperiments.java";
+		String javaCode = readFile(filePath);
+		
+		//On rÈcupËre la mÈthode challenge sous forme de nodes
+		List<Node> nodes = getChallengeMethodToNodes(javaCode);
+		
+		//On transforme le code de la mÈthode pour pouvoir crÈer la trace au fur et ‡ mesure
+		List<Node> newnodes = NodeNavigator.transformNodes(nodes);
+		
+		//On exÈcute le code bloc par bloc
+		for(Node n : newnodes) {
+			interpreter.eval(n.toString());
+		}
+		
+		//On rÈcupËre la trace entiËre
+		DEBUG_CAUSE_EFFECT_CHAIN = (List<CECElement>)interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
+		
+		//On affiche la trace
+		for(CECElement n : DEBUG_CAUSE_EFFECT_CHAIN) {
+			System.out.print("Line [" + n.getLine() + "] :");
+			System.out.println("	New value of \""+n.getDescription()+"\" is " + n.getVariable());
+		}
+	}
+	
+	/**
+	 * Permet de lire un fichier et de le renvoyer en String
+	 * 
+	 * @param fileName
+	 * @return
+	 */
 	public static String readFile(String fileName) {
 		try {
 			return new Scanner(new File(fileName)).useDelimiter("\\Z").next();
@@ -65,43 +100,19 @@ public class BeanShellExperiments {
 			return "";
 		}
 	}
-
 	
-	public static Object createObjectFromClass(Class c, Object i) {
-		try {
-			Constructor<?> ctor = c.getConstructor(int.class);		
-			return ctor.newInstance(new Object[] { i });
-		} catch (Exception e) {
-			return null;
-		}
+	/**
+	 * MÈthode de rÈcupÈration de la mÈthode qui nous intÈresse depuis la classe complËte
+	 * 
+	 * @param fullClass
+	 * @return
+	 */
+	public static List<Node> getChallengeMethodToNodes(String fullClass) {		
+		CompilationUnit cu = JavaParser.parse(fullClass);
+		
+		ChallengeVisitor visitor = new ChallengeVisitor();
+		visitor.visit(cu, null);
+		
+		return visitor.nodeList;		
 	}
-	
-	private static HashMap<String, Object> getAllFields(Class c) {
-		Field[] fields = c.getDeclaredFields();
-		HashMap<String, Object> stringFields = new HashMap<String, Object>();
-		
-		System.out.println("Liste des variables :");
-		for(Field f : fields) {
-			if(f.getType().getName() != "bsh.This") {
-				System.out.println("	" + f.getType().getName() + " " + f.getName());
-				stringFields.put(f.getName(), f.getType());
-			}
-		}
-		
-		return stringFields;
-	}
-
-	private static HashMap<String, Object> getAllMethods(Class c) {
-		Method[] methods = c.getDeclaredMethods();
-		HashMap<String, Object> stringMethods = new HashMap<String, Object>();
-		
-		System.out.println("Liste des m√©thodes :");
-		for(Method m : methods) {
-				System.out.println("	" + m.toString());
-				stringMethods.put(m.toString(), m.getReturnType());
-		}
-		
-		return stringMethods;
-	}
-	
 }
