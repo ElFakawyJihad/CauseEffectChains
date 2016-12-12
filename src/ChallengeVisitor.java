@@ -10,22 +10,21 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.*;
 
 /**
- * Permet d'itérer à haut niveau dans les nodes, ici on récupère une méthode en particulier.
+ * Permet d'itérer à haut niveau dans les nodes, ici on récupère une méthode en
+ * particulier.
  * 
  * @author Quentin
  *
  */
-public class ChallengeVisitor extends VoidVisitorAdapter
- {
-		public String challengeMethod;
-		public List<Node> nodeList;
-	
-		@Override
-        public void visit(MethodDeclaration n, Object arg)
-        {
-			if(n.getName().toString().equals("challenge")) {
-				challengeMethod = n.toString();				
-				nodeList = n.getBody().get().getChildNodes();
-			}			
-        }
- }
+public class ChallengeVisitor extends VoidVisitorAdapter {
+	public String challengeMethod;
+	public List<Node> nodeList;
+
+	@Override
+	public void visit(MethodDeclaration n, Object arg) {
+		if (n.getName().toString().equals("challenge")) {
+			challengeMethod = n.toString();
+			nodeList = n.getBody().get().getChildNodes();
+		}
+	}
+}

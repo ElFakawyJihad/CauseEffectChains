@@ -7,11 +7,11 @@ import fr.univ_lille1.m2iagl.dd.ChainElement;
 public class CEC implements CauseEffectChain {
 
 	public List<ChainElement> chain;
-	
+
 	public CEC() {
 		chain = new ArrayList<ChainElement>();
 	}
-	
+
 	@Override
 	public List<ChainElement> getChain() {
 		return chain;
