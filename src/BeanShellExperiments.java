@@ -18,11 +18,22 @@ public class BeanShellExperiments {
 
 	public void challenge(int input) {
 		int bonjour = 5;
-		input += 10;
+		input += 10; 
 		input /= 2;
+		
 		for (int i = 0; i < 5; i++) {
 			input += i;
 		}
+		
+		List temp = new ArrayList();
+		temp.add(1);
+		temp.add(3);
+		temp.add(5);
+		
+		for(Object j : temp) {
+			input = input + Integer.parseInt(j.toString());
+		}
+		
 		bonjour += 1;
 	}
 
@@ -40,6 +51,7 @@ public class BeanShellExperiments {
 	public static void getTrace() throws EvalError, IOException {
 		List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN = new ArrayList<CECElement>();
 		
+		interpreter.eval("import java.util.*;");
 		//On donne à l'interpreteur un objet dans le quel remplir sa trace. 
 		//Astuce pour lui faire connaître des classes étrangères par la même occasion.
 		//Le nom à rallonge permet d'éviter un doublon de variables
