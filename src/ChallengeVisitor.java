@@ -2,6 +2,7 @@ import java.util.List;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ForStmt;
 import com.github.javaparser.ast.stmt.ForeachStmt;
@@ -18,6 +19,7 @@ import com.github.javaparser.*;
  */
 public class ChallengeVisitor extends VoidVisitorAdapter {
 	public String challengeMethod;
+	public String inputName;
 	public List<Node> nodeList;
 
 	@Override
@@ -25,6 +27,7 @@ public class ChallengeVisitor extends VoidVisitorAdapter {
 		if (n.getName().toString().equals("challenge")) {
 			challengeMethod = n.toString();
 			nodeList = n.getBody().get().getChildNodes();
+			inputName = ((Parameter)n.getParameters().get(0)).getName().toString();
 		}
 	}
 }

@@ -13,22 +13,24 @@ import com.github.javaparser.ast.Node;
 
 import bsh.EvalError;
 
-public class BeanShellExperiments {
-	public static Interpreter interpreter = new Interpreter();
-
+public class BeanShell {
+	public Interpreter interpreter;
+	public String inputName;
+	public String challengeMethod;
+	
 	public void challenge(int input) {
 		int bonjour = 5;
 		input += 10; 
 		input /= 2;
 		
-		for (int i = 0; i < 5; i++) {
-			input += i;
-		}
-		
 		List temp = new ArrayList();
 		temp.add(1);
 		temp.add(3);
 		temp.add(5);
+		
+		for (int i = 0; i < 5; i++) {
+			input += i;
+		}
 		
 		for(Object j : temp) {
 			input = input + Integer.parseInt(j.toString());
@@ -37,54 +39,47 @@ public class BeanShellExperiments {
 		bonjour += 1;
 	}
 
-	/**
-	 * Le coeur de l'exécution
-	 * 
-	 * @param args
-	 * @throws EvalError
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws EvalError, IOException {
-		getTrace();
-	}
-
-	public static void getTrace() throws EvalError, IOException {
+	public void initInterpreter() throws EvalError {
 		List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN = new ArrayList<CECElement>();
 		
+		interpreter = new Interpreter();
+		
+		//Un import au cas où pour l'interpreter
 		interpreter.eval("import java.util.*;");
+		
 		//On donne à l'interpreteur un objet dans le quel remplir sa trace. 
 		//Astuce pour lui faire connaître des classes étrangères par la même occasion.
 		//Le nom à rallonge permet d'éviter un doublon de variables
 		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN);
+	}
+	
+	public List<CECElement> getTrace(Object input) throws EvalError, IOException {
+		initInterpreter();
 
-		interpreter.set("input", 5); // On ajoute l'input, ici le 5 sera ensuite
-		// en dynamique.
+		// On ajoute l'input, ici le 5 sera ensuite en dynamique.
+		interpreter.set("input", input);
 
-		// On récupère la classe où se trouve la méthode challenge qui nous
-		// intéresse
+		// On récupère la classe où se trouve la méthode challenge qui nous intéresse
 		File tempFile = new File("");
-		String filePath = tempFile.getAbsolutePath() + "/src/" + "BeanShellExperiments.java";
+		String filePath = tempFile.getAbsolutePath() + "/src/" + "BeanShell.java";
 		String javaCode = readFile(filePath);
 
 		// On récupère la méthode challenge sous forme de nodes
 		List<Node> nodes = getChallengeMethodToNodes(javaCode);
 
-		// On transforme le code de la méthode pour pouvoir créer la trace au
-		// fur et à mesure
-		List<Node> newnodes = NodeNavigator.transformNodes(nodes);
+		// On transforme le code de la méthode pour pouvoir créer la trace au fur et à mesure
+		List<Node> newnodes = NodeNavigator.transformNodes(nodes, "");
 
 		// On exécute le code bloc par bloc
 		for (Node n : newnodes) {
 			interpreter.eval(n.toString());
 		}
-
-		// On récupère la trace entière
-		DEBUG_CAUSE_EFFECT_CHAIN = (List<CECElement>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
 		
-		printTrace(DEBUG_CAUSE_EFFECT_CHAIN);
+		// On récupère la trace entière et on la retourne	
+		return (List<CECElement>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
 	}
 
-	public static void printTrace(List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN) {
+	public void printTrace(List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN) {
 		List<CECElement> printedList = new ArrayList<CECElement>();
 
 		// On affiche la trace
@@ -92,28 +87,7 @@ public class BeanShellExperiments {
 			int loopIteration = 0;
 
 			System.out.print("Line [" + e.getLine() + "] :");
-			System.out.print("	New value of \"" + e.getDescription() + "\" is " + e.getVariable());
-
-			// Pour détecter la première itération dans une boucle
-			for (CECElement e2 : DEBUG_CAUSE_EFFECT_CHAIN) {
-				if (loopIteration == 0 && e2.getLine().equals(e.getLine()) && !e2.equals(e)) {
-					loopIteration++;
-				}
-			}
-
-			// Pour détecter la n-ième itération dans une boucle
-			for (CECElement e2 : printedList) {
-				if (e2.getLine().equals(e.getLine())) {
-					loopIteration++;
-				}
-			}
-
-			// Pour gérer l'affichage des itérations de boucles
-			if (loopIteration == 0) {
-				System.out.println("");
-			} else {
-				System.out.println(" | Loop iteration : " + (loopIteration));
-			}
+			System.out.println("	" + e.getVariable() + "	is the new value of " + e.getDescription());
 
 			printedList.add(e);
 		}
@@ -125,7 +99,7 @@ public class BeanShellExperiments {
 	 * @param fileName
 	 * @return
 	 */
-	public static String readFile(String fileName) {
+	public String readFile(String fileName) {
 		try {
 			return new Scanner(new File(fileName)).useDelimiter("\\Z").next();
 		} catch (FileNotFoundException e) {
@@ -141,11 +115,13 @@ public class BeanShellExperiments {
 	 * @param fullClass
 	 * @return
 	 */
-	public static List<Node> getChallengeMethodToNodes(String fullClass) {
+	public List<Node> getChallengeMethodToNodes(String fullClass) {
 		CompilationUnit cu = JavaParser.parse(fullClass);
 
 		ChallengeVisitor visitor = new ChallengeVisitor();
 		visitor.visit(cu, null);
+		inputName = visitor.inputName;
+		challengeMethod = visitor.challengeMethod;
 
 		return visitor.nodeList;
 	}
