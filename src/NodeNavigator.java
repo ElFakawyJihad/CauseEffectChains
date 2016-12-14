@@ -78,6 +78,9 @@ public class NodeNavigator {
 			case "IfStmt":
 				newNodes.addAll(NodeHandler.ifStmtHandler(cNode, nameOfLoopIterationVar));
 				break;
+			case "TryStmt":
+				newNodes.addAll(NodeHandler.tryStmtHandler(cNode, nameOfLoopIterationVar));
+				break;
 			default:
 				break;
 		}

@@ -11,10 +11,13 @@ import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBody;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ForStmt;
+import com.github.javaparser.ast.stmt.ForeachStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.TryStmt;
 
 import bsh.EvalError;
 
@@ -44,14 +47,14 @@ public class NodeHandler {
 		//On récupère les instructions dans la boucle
 		BlockStmt blockStmt = (BlockStmt) ((NodeWithBody) cNode).getBody();
 
-		if(handleSubExpression((Expression) cNode.getChildNodes().get(1)).equals("")) {
+		//La récupération est différente selon les types de boucles.
+		if(cNode instanceof ForeachStmt) {
 			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(0));
-		} else {
+		} else if (cNode instanceof ForeachStmt) {
 			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(1));
 		}
 		
-		
-		
+		//On ajoute une var de loop itération pour afficher les itérations de boucles
 		handleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
 		newNodes.add(cNode);
 		
@@ -113,7 +116,20 @@ public class NodeHandler {
 		}
 	}
 
-	
+	public static List<Node> tryStmtHandler(Node cNode, String nameOfLoopIterationVar) throws EvalError {
+		List<Node> newNodes = new ArrayList<Node>();
+		
+		TryStmt tryStmt = (TryStmt)cNode;
+		handleBlockStmt(tryStmt.getTryBlock().get(), nameOfLoopIterationVar);
+		
+		for(CatchClause cc :tryStmt.getCatchClauses()) {
+			handleBlockStmt(cc.getBody(), nameOfLoopIterationVar);
+		}
+		
+		newNodes.add(tryStmt);
+		
+		return newNodes;
+	}
 	
 	/**
 	 * Pour gérer une expression, qui est un cran en dessous de ExpressionStmt
