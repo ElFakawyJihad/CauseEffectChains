@@ -39,6 +39,21 @@ public class BeanShell {
 			} 
 		}
 		
+		switch(bonjour) {
+			case 5:
+				bonjour+=1000;
+				break;
+			case 10:
+				bonjour+=1000;
+				break;
+			case 15:
+				bonjour+=1000;
+				break;
+			default:
+				bonjour+=5555;
+				break;
+		}
+		
 
 		
 		for(Object j : temp) {

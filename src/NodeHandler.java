@@ -17,6 +17,8 @@ import com.github.javaparser.ast.stmt.ForStmt;
 import com.github.javaparser.ast.stmt.ForeachStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.SwitchEntryStmt;
+import com.github.javaparser.ast.stmt.SwitchStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
 
 import bsh.EvalError;
@@ -127,6 +129,28 @@ public class NodeHandler {
 		}
 		
 		newNodes.add(tryStmt);
+		
+		return newNodes;
+	}
+	
+	public static List<Node> switchStmtHandler(Node cNode, String nameOfLoopIterationVar) throws EvalError {
+		List<Node> newNodes = new ArrayList<Node>();
+		SwitchStmt switchStmt = (SwitchStmt) cNode;
+		
+		for (SwitchEntryStmt e : switchStmt.getEntries()) {
+			List<Node> tempNodes = NodeNavigator.transformNodes(e.getChildNodes(), nameOfLoopIterationVar); 
+			
+			if(e.getLabel().isPresent()) //Si ce n'est pas le default, on dégage le "case"
+					tempNodes.remove(0);
+			
+			//On efface le bloc pour mettre les nouvelles nodes dedans
+			e.getStatements().clear();
+
+			for (Node n : tempNodes) {
+				e.getStatements().add((Statement)n);
+			}
+		}
+		newNodes.add(switchStmt);
 		
 		return newNodes;
 	}

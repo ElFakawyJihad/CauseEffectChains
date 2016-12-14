@@ -81,7 +81,11 @@ public class NodeNavigator {
 			case "TryStmt":
 				newNodes.addAll(NodeHandler.tryStmtHandler(cNode, nameOfLoopIterationVar));
 				break;
+			case "SwitchStmt":
+				newNodes.addAll(NodeHandler.switchStmtHandler(cNode, nameOfLoopIterationVar));
+				break;
 			default:
+				newNodes.add(cNode);
 				break;
 		}
 
