@@ -50,7 +50,7 @@ public class NodeHandler {
 		//La récupération est différente selon les types de boucles.
 		if(cNode instanceof ForeachStmt) {
 			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(0));
-		} else if (cNode instanceof ForeachStmt) {
+		} else if (cNode instanceof ForStmt) {
 			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(1));
 		}
 		

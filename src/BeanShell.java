@@ -18,7 +18,7 @@ public class BeanShell {
 	public String inputName;
 	public String challengeMethod;
 	
-	public void challenge(int input) {
+	public void challenge(int input) {		
 		int bonjour = 5;
 		input += 10; 
 		input /= 2;
@@ -30,7 +30,16 @@ public class BeanShell {
 		
 		for (int i = 0; i < 5; i++) {
 			input += i;
+			
+			try {
+				bonjour += 5;
+				bonjour /= 0;
+			} catch(Exception e) {
+				bonjour += 5;
+			} 
 		}
+		
+
 		
 		for(Object j : temp) {
 			input = input + Integer.parseInt(j.toString());
