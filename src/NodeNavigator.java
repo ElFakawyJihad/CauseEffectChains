@@ -33,14 +33,14 @@ public class NodeNavigator {
 	 * @return
 	 * @throws EvalError
 	 */
-	public static List<Node> transformNodes(List<Node> nodes) throws EvalError {
+	public static List<Node> transformNodes(List<Node> nodes, String nameOfLoopIterationVar) throws EvalError {
 		int index = 1;
 		List<Node> newNodes = new ArrayList<Node>();
 
 		ListIterator<Node> iterator = nodes.listIterator();
 		while (iterator.hasNext()) {
 			Node node = iterator.next();
-			newNodes.addAll(transformNode(node, index));
+			newNodes.addAll(transformNode(node, index, nameOfLoopIterationVar));
 			index++;
 		}
 
@@ -57,7 +57,7 @@ public class NodeNavigator {
 	 * @return
 	 * @throws EvalError
 	 */
-	public static List<Node> transformNode(Node node, int index) throws EvalError {
+	public static List<Node> transformNode(Node node, int index, String nameOfLoopIterationVar) throws EvalError {
 		// On clone car on ne peut pas modifier une linkedList en cours d'itération
 		Node cNode = node.clone();
 		cNode.setParentNode(node.getParentNode().get().clone());
@@ -68,15 +68,15 @@ public class NodeNavigator {
 		
 		//DoStmt, ForeachStmt, ForStmt, WhileStmt
 		if (cNode instanceof NodeWithBody) {
-			newNodes.addAll(NodeHandler.loopStmtHandler(cNode));
+			newNodes.addAll(NodeHandler.loopStmtHandler(cNode, nameOfLoopIterationVar));
 		}
 		
 		switch (cNode.getClass().getSimpleName()) {
 			case "ExpressionStmt":			
-				newNodes.addAll(NodeHandler.expressionStmtHandler(cNode));			
+				newNodes.addAll(NodeHandler.expressionStmtHandler(cNode, nameOfLoopIterationVar));			
 				break;
 			case "IfStmt":
-				newNodes.addAll(NodeHandler.ifStmtHandler(cNode));
+				newNodes.addAll(NodeHandler.ifStmtHandler(cNode, nameOfLoopIterationVar));
 				break;
 			default:
 				break;

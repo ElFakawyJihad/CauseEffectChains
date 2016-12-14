@@ -9,12 +9,27 @@ import com.github.javaparser.ast.stmt.Statement;
  *
  */
 public class StatementFactory {
-	public static Statement addInputToList(String line, String var, String description) {
-		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + var + ", \"" + description
-				+ "\"));";
+	public static Statement addInputToList(String line, String var, String description, String nameOfLoopIterationVar) {
+		description = "\"\\\"" + description + "\\\"\"";
+		
+		
+		if(nameOfLoopIterationVar.contains(";")) {
+			description += " + \"	| Loop iterations : \"";
+			for(String b : nameOfLoopIterationVar.split(";")) {
+				description += " + \"" + b + "=\" + " + b + " + \";\"";
+			}
+		}
+		
+		
+		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + var + ", " + description
+				+ "));";
 
 		Statement statement = JavaParser.parseStatement(code);
 
+
+			
+		
+		
 		return statement;
 	}
 }
