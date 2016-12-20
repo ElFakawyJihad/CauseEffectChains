@@ -1,4 +1,8 @@
+package bs;
 import bsh.Interpreter;
+import dd.impl.CECElement;
+import parser.ChallengeVisitor;
+import parser.NodeNavigator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,50 +21,14 @@ public class BeanShell {
 	public Interpreter interpreter;
 	public String inputName;
 	public String challengeMethod;
+	public String challengeName;
 	
-	public void challenge(int input) {		
-		int bonjour = 5;
-		input += 10; 
-		input /= 2;
-		
-		List temp = new ArrayList();
-		temp.add(1);
-		temp.add(3);
-		temp.add(5);
-		
-		for (int i = 0; i < 5; i++) {
-			input += i;
-			
-			try {
-				bonjour += 5;
-				bonjour /= 0;
-			} catch(Exception e) {
-				bonjour += 5;
-			} 
-		}
-		
-		switch(bonjour) {
-			case 5:
-				bonjour+=1000;
-				break;
-			case 10:
-				bonjour+=1000;
-				break;
-			case 15:
-				bonjour+=1000;
-				break;
-			default:
-				bonjour+=5555;
-				break;
-		}
-		
-
-		
-		for(Object j : temp) {
-			input = input + Integer.parseInt(j.toString());
-		}
-		
-		bonjour += 1;
+	public BeanShell() {
+		this.challengeName = "BeanShell";
+	}
+	
+	public BeanShell(String challengeName) {
+		this.challengeName = challengeName;
 	}
 
 	public void initInterpreter() throws EvalError {
@@ -68,8 +36,9 @@ public class BeanShell {
 		
 		interpreter = new Interpreter();
 		
-		//Un import au cas où pour l'interpreter
+		//Des import utiles pour l'interpreter
 		interpreter.eval("import java.util.*;");
+		interpreter.eval("import dd.impl.CECElement;");
 		
 		//On donne à l'interpreteur un objet dans le quel remplir sa trace. 
 		//Astuce pour lui faire connaître des classes étrangères par la même occasion.
@@ -85,7 +54,7 @@ public class BeanShell {
 
 		// On récupère la classe où se trouve la méthode challenge qui nous intéresse
 		File tempFile = new File("");
-		String filePath = tempFile.getAbsolutePath() + "/src/" + "BeanShell.java";
+		String filePath = tempFile.getAbsolutePath() + "/src/challenges/" + challengeName + ".java";
 		String javaCode = readFile(filePath);
 
 		// On récupère la méthode challenge sous forme de nodes
@@ -104,6 +73,8 @@ public class BeanShell {
 	}
 
 	public void printTrace(List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN) {
+		System.err.println("_____ TRACE BEGIN _____");
+		
 		List<CECElement> printedList = new ArrayList<CECElement>();
 
 		// On affiche la trace
@@ -115,6 +86,8 @@ public class BeanShell {
 
 			printedList.add(e);
 		}
+		
+		System.err.println("_____ TRACE ENDS _____");
 	}
 	
 	/**

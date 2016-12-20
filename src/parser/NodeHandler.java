@@ -1,3 +1,4 @@
+package parser;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +87,7 @@ public class NodeHandler {
 		}
 		
 		//Gestion du else
-		if(ifStmt.getChildNodes().size() >= 2) {
+		if(ifStmt.getChildNodes().size() > 2) {
 			Node elseBlockNode = ifStmt.getChildNodes().get(2);
 			if(elseBlockNode instanceof BlockStmt) {			
 				handleBlockStmt(elseBlockNode, nameOfLoopIterationVar);

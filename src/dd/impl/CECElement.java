@@ -1,4 +1,5 @@
-import fr.univ_lille1.m2iagl.dd.ChainElement;
+package dd.impl;
+import dd.ChainElement;
 
 public class CECElement implements ChainElement {
 

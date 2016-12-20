@@ -1,11 +1,12 @@
-package fr.univ_lille1.m2iagl.dd.impl;
+package dd.impl;
 
-import fr.univ_lille1.m2iagl.dd.DDebugger;
+import challenges.FirstChallenge;
+import dd.DDebugger;
 
 public class Main {
 
-	public static void main(String[] args){
-		DDebugger d = new DummyDDebugger();
-		System.out.println(d.debug(new DummyChallenge()));
+	public static void main(String[] args) {
+		DDebugger d = new DDebuggerImpl();
+		System.out.println(d.debug(new FirstChallenge()));
 	}
 }

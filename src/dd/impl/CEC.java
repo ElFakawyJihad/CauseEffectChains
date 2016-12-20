@@ -1,12 +1,22 @@
-package fr.univ_lille1.m2iagl.dd.impl;
+package dd.impl;
 
-import fr.univ_lille1.m2iagl.dd.CauseEffectChain;
-import fr.univ_lille1.m2iagl.dd.ChainElement;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class DummyCauseEffectChain implements CauseEffectChain {
-	public List<ChainElement> getChain() {
-		return null;
+import dd.CauseEffectChain;
+import dd.ChainElement;
+
+public class CEC implements CauseEffectChain {
+
+	public List<ChainElement> chain;
+
+	public CEC() {
+		chain = new ArrayList<ChainElement>();
 	}
+
+	@Override
+	public List<ChainElement> getChain() {
+		return chain;
+	}
+
 }

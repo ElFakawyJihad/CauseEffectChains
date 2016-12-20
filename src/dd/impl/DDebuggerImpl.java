@@ -1,25 +1,41 @@
-package fr.univ_lille1.m2iagl.dd.impl;
+package dd.impl;
 
-import fr.univ_lille1.m2iagl.dd.CauseEffectChain;
-import fr.univ_lille1.m2iagl.dd.Challenge;
-import fr.univ_lille1.m2iagl.dd.DDebugger;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DummyDDebugger implements DDebugger<String> {
-	public DummyCauseEffectChain debug(Challenge<String> c) {
-		for (String input: c.getInputs()) {
-			// run 4 times
-			for (int i = 0; i<4; i++) {
-				// instrument & modify
-				internalDebug(c.getJavaProgram(), input);
-				// reason about execution
-				c.oracle(input);
-			}
+import bs.BeanShell;
+import bsh.EvalError;
+import dd.CauseEffectChain;
+import dd.Challenge;
+import dd.DDebugger;
+
+public class DDebuggerImpl implements DDebugger<Integer> {
+	
+	@Override
+	public CEC debug(Challenge<Integer> c) {
+		for (Integer input: c.getInputs()) {
+			//for (int i = 0; i<4; i++) {
+				internalDebug(input, c.getClass().getSimpleName());
+				c.challenge(input);
+			//}
 		}
-		return new DummyCauseEffectChain();
+		return new CEC();
 	}
 
-	private void internalDebug(String javaProgram, String input) {
-		// a dummy debugger do thing
+	private void internalDebug(Integer input, String challengeName) {
+		BeanShell beanshell = new BeanShell(challengeName);
+		
+		List<CECElement> trace = new ArrayList<CECElement>();
+		
+		try {
+			trace = beanshell.getTrace(input);
+		} catch (EvalError | IOException e) {
+			//e.printStackTrace();
+			System.err.println("A CRASH HAS HAPPEN IN THE INTERPRETER.");
+		}
+		
+		beanshell.printTrace(trace);
 	}
 
 }
