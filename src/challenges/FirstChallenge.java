@@ -26,15 +26,11 @@ public class FirstChallenge implements Challenge<Integer> {
 	public void challenge(Integer input) {
 		int bonjour = 5;
 		input += 10; 
-		input /= 2;
-		
-		List temp = new ArrayList();
-		temp.add(1);
-		temp.add(3);
-		temp.add(5);		
+		input /= 2;	
 		
 		for (int i = 0; i < 5; i++) {
 			input += i;
+			input /= 0;
 		}
 		
 		bonjour += 1;

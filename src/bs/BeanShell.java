@@ -46,7 +46,7 @@ public class BeanShell {
 		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN);
 	}
 	
-	public List<CECElement> getTrace(Object input) throws EvalError, IOException {
+	public List<CECElement> getTrace(Object input) throws EvalError {
 		initInterpreter();
 
 		// On ajoute l'input, ici le 5 sera ensuite en dynamique.
@@ -62,18 +62,22 @@ public class BeanShell {
 
 		// On transforme le code de la méthode pour pouvoir créer la trace au fur et à mesure
 		List<Node> newnodes = NodeNavigator.transformNodes(nodes, "");
-
+		
 		// On exécute le code bloc par bloc
 		for (Node n : newnodes) {
-			interpreter.eval(n.toString());
+			try {
+				interpreter.eval(n.toString());
+			} catch (EvalError e) {
+				break;
+			}
 		}
 		
 		// On récupère la trace entière et on la retourne	
-		return (List<CECElement>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
+		return (List<CECElement>)interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
 	}
 
 	public void printTrace(List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN) {
-		System.err.println("_____ TRACE BEGIN _____");
+		System.out.println("_____ TRACE BEGIN _____");
 		
 		List<CECElement> printedList = new ArrayList<CECElement>();
 
@@ -87,7 +91,7 @@ public class BeanShell {
 			printedList.add(e);
 		}
 		
-		System.err.println("_____ TRACE ENDS _____");
+		System.out.println("_____ TRACE ENDS _____");
 	}
 	
 	/**

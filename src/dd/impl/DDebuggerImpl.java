@@ -6,7 +6,6 @@ import java.util.List;
 
 import bs.BeanShell;
 import bsh.EvalError;
-import dd.CauseEffectChain;
 import dd.Challenge;
 import dd.DDebugger;
 
@@ -15,10 +14,8 @@ public class DDebuggerImpl implements DDebugger<Integer> {
 	@Override
 	public CEC debug(Challenge<Integer> c) {
 		for (Integer input: c.getInputs()) {
-			//for (int i = 0; i<4; i++) {
 				internalDebug(input, c.getClass().getSimpleName());
-				c.challenge(input);
-			//}
+				//c.challenge(input);
 		}
 		return new CEC();
 	}
@@ -27,14 +24,14 @@ public class DDebuggerImpl implements DDebugger<Integer> {
 		BeanShell beanshell = new BeanShell(challengeName);
 		
 		List<CECElement> trace = new ArrayList<CECElement>();
-		
+
 		try {
 			trace = beanshell.getTrace(input);
-		} catch (EvalError | IOException e) {
-			//e.printStackTrace();
-			System.err.println("A CRASH HAS HAPPEN IN THE INTERPRETER.");
+		} catch (EvalError e) {
+			e.printStackTrace();
 		}
 		
+		//C'est temporaire, jusqu'à ce qu'on fasse une vraie chaine de cause à effet
 		beanshell.printTrace(trace);
 	}
 
