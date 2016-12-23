@@ -26,4 +26,5 @@ public class ChallengeVisitor extends VoidVisitorAdapter {
 			inputName = ((Parameter)n.getParameters().get(0)).getName().toString();
 		}
 	}
+	
 }

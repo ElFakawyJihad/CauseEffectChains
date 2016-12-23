@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bs.BeanShell;
+import bs.BeanShellTest;
 import bsh.EvalError;
 import dd.Challenge;
 import dd.DDebugger;

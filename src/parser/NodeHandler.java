@@ -8,6 +8,7 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBody;
@@ -166,7 +167,7 @@ public class NodeHandler {
 	 */
 	public static String handleSubExpression(Expression e) {
 		switch (e.getClass().getSimpleName()) {
-			case "VariableDeclarationExpr":
+			case "VariableDeclarationExpr" : 
 				VariableDeclarationExpr variableDeclarationExpr = (VariableDeclarationExpr) e;
 				List<Node> vde_Nodes = variableDeclarationExpr.getChildNodes();
 				VariableDeclarator variableDeclarator = (VariableDeclarator) vde_Nodes.get(1);
@@ -184,8 +185,8 @@ public class NodeHandler {
 			case "MethodCallExpr":
 				MethodCallExpr mc_Expr = (MethodCallExpr) e;
 				List<Node> mc_Nodes = mc_Expr.getChildNodes();
-				NameExpr mc_nameExpr = (NameExpr) mc_Nodes.get(0);
-				return mc_nameExpr.getName().toString();
+				SimpleName mc_nameExpr = (SimpleName) mc_Nodes.get(0);
+				return mc_nameExpr.toString();
 			default:
 				return "";
 		}
