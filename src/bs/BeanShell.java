@@ -58,21 +58,36 @@ public class BeanShell {
 
 		// On récupère la méthode challenge sous forme de nodes
 		List<Node> nodes = getChallengeMethodToNodes(javaCode);
-
+		
 		// On transforme le code de la méthode pour pouvoir créer la trace au fur et à mesure
 		List<Node> newnodes = NodeNavigator.transformNodes(nodes, "");
 		
+		System.out.println("execution : "+challengeName+".challenge("+inputName+"="+input+")");
+		
+		CECElement errorElem = null;
+		int line=0;
 		// On exécute le code bloc par bloc
 		for (Node n : newnodes) {
+			line = n.getBegin().get().line;
+			
 			try {
 				interpreter.eval(n.toString());
+
 			} catch (EvalError e) {
+				//line =  line de la boucle + line dans le block de la boucle - 1
+				errorElem =new CECElement(""+(line+e.getErrorLineNumber()-1), e.getErrorText(), e.getCause().toString());
+				//System.out.println(e.getCause());
 				break;
 			}
 		}
 		
 		// On récupère la trace entière et on la retourne	
-		return (List<CECElement>)interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
+		List<CECElement> cec = (List<CECElement>)interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
+		if(errorElem != null){
+			//errorElem.setLine(cec.get(cec.size()-1).getLine());
+			cec.add(errorElem);
+		}
+		return cec;
 	}
 
 	public void printTrace(List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN) {

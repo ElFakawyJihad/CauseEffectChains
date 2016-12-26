@@ -5,6 +5,7 @@ import java.util.ListIterator;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithBody;
+import com.github.javaparser.ast.stmt.Statement;
 
 import bsh.EvalError;
 
@@ -61,6 +62,7 @@ public class NodeNavigator {
 		//DoStmt, ForeachStmt, ForStmt, WhileStmt
 		if (cNode instanceof NodeWithBody) {
 			newNodes.addAll(NodeHandler.loopStmtHandler(cNode, nameOfLoopIterationVar));
+			return newNodes;
 		}
 		
 		switch (cNode.getClass().getSimpleName()) {

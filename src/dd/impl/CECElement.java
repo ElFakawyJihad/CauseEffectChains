@@ -27,5 +27,9 @@ public class CECElement implements ChainElement {
 	public String getDescription() {
 		return description;
 	}
+	
+	public void setLine(String l){
+		line=l;
+	}
 
 }
