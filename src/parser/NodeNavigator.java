@@ -61,6 +61,7 @@ public class NodeNavigator {
 		//DoStmt, ForeachStmt, ForStmt, WhileStmt
 		if (cNode instanceof NodeWithBody) {
 			newNodes.addAll(NodeHandler.loopStmtHandler(cNode, nameOfLoopIterationVar));
+			return newNodes;
 		}
 		
 		switch (cNode.getClass().getSimpleName()) {
