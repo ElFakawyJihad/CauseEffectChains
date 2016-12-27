@@ -48,6 +48,7 @@ public class NodeHandler {
 	public static List<Node> loopStmtHandler(Node cNode, String nameOfLoopIterationVar) throws EvalError {
 		List<Node> newNodes = new ArrayList<Node>();
 		
+		
 		//On récupère les instructions dans la boucle
 		BlockStmt blockStmt = (BlockStmt) ((NodeWithBody) cNode).getBody();
 
@@ -58,11 +59,43 @@ public class NodeHandler {
 			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(1));
 		}
 		
+		
 		//On ajoute une var de loop itération pour afficher les itérations de boucles
-		handleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
+		//handleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
+		loopHandleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
+		
 		newNodes.add(cNode);
 		
 		return newNodes;
+	}
+	
+	/**
+	 * Body block for loop
+	 * @param cNode
+	 * @param nameOfLoopIterationVar
+	 * @throws EvalError
+	 */
+	public static void loopHandleBlockStmt(Node cNode, String nameOfLoopIterationVar) throws EvalError {
+		BlockStmt blockStmt = (BlockStmt) cNode;
+
+		//On altère chacune de ses nodes recursivement
+		List<Node> tempNodes = NodeNavigator.transformNodes(blockStmt.getChildNodes(), nameOfLoopIterationVar); 
+
+		//On efface le bloc pour mettre les nouvelles nodes dedans
+		blockStmt.getStatements().clear();
+
+		
+		Statement t = StatementFactory.loopBegin(
+				String.valueOf(cNode.getBegin().get().line),nameOfLoopIterationVar );
+		blockStmt.getStatements().add(t);
+
+		for (Node n : tempNodes) {
+			blockStmt.getStatements().add((Statement) n);
+		}
+		
+		Statement tEnd = StatementFactory.loopBegin(
+				String.valueOf(cNode.getEnd().get().line),nameOfLoopIterationVar );
+		blockStmt.getStatements().add(tEnd);
 	}
 	
 	/**
@@ -114,7 +147,8 @@ public class NodeHandler {
 		
 		//On efface le bloc pour mettre les nouvelles nodes dedans
 		blockStmt.getStatements().clear();
-
+		
+		
 		for (Node n : tempNodes) {
 			blockStmt.getStatements().add((Statement) n);
 		}

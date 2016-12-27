@@ -5,6 +5,7 @@ import java.util.ListIterator;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.nodeTypes.NodeWithBody;
+import com.github.javaparser.ast.stmt.Statement;
 
 import bsh.EvalError;
 

@@ -33,4 +33,24 @@ public class StatementFactory {
 		
 		return statement;
 	}
+	
+	public static Statement loopBegin(String line,String loopIteration) {
+		//description = "\"\\\"" + description + "\\\"\"";
+		String iterationVar=null;
+		
+		if(loopIteration.contains(";")) {
+			//description += " + \"	| Loop iterations : \"";
+			for(String b : loopIteration.split(";")) {
+				iterationVar=b;
+				//description += " + \"" + b + "=\" + " + b + " + \";\"";
+			}
+		}
+		
+		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + iterationVar + ", " + "\""+iterationVar+"\"));";
+
+		Statement statement = JavaParser.parseStatement(code);
+		
+		return statement;
+	}
+	
 }
