@@ -1,4 +1,5 @@
 package parser;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.javaparser.ast.Node;
@@ -17,6 +18,7 @@ public class ChallengeVisitor extends VoidVisitorAdapter {
 	public String challengeMethod;
 	public String inputName;
 	public List<Node> nodeList;
+	public int line;
 
 	@Override
 	public void visit(MethodDeclaration n, Object arg) {
@@ -24,6 +26,9 @@ public class ChallengeVisitor extends VoidVisitorAdapter {
 			challengeMethod = n.toString();
 			nodeList = n.getBody().get().getChildNodes();
 			inputName = ((Parameter)n.getParameters().get(0)).getName().toString();
+			//ligne de la declaration de la methode = ligne des param
+			line = n.getParameters().get(0).getBegin().get().line;
+
 		}
 	}
 	

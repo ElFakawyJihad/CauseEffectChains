@@ -10,18 +10,19 @@ import bsh.EvalError;
 import dd.Challenge;
 import dd.DDebugger;
 
-public class DDebuggerImpl implements DDebugger<Integer> {
+public class DDebuggerImpl implements DDebugger<Object> {
 	
 	@Override
-	public CEC debug(Challenge<Integer> c) {
-		for (Integer input: c.getInputs()) {
+	public CEC debug(Challenge<Object> c) {
+		for (Object input: c.getInputs()) {
+				System.out.println("Execution avec input : "+input);
 				internalDebug(input, c.getClass().getSimpleName());
 				//c.challenge(input);
 		}
 		return new CEC();
 	}
 
-	private void internalDebug(Integer input, String challengeName) {
+	private void internalDebug(Object input, String challengeName) {
 		BeanShell beanshell = new BeanShell(challengeName);
 		
 		List<CECElement> trace = new ArrayList<CECElement>();

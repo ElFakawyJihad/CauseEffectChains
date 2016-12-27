@@ -21,6 +21,7 @@ public class BeanShell {
 	public String inputName;
 	public String challengeMethod;
 	public String challengeName;
+	public int lineMethod;
 	
 	public BeanShell() {
 		this.challengeName = "BeanShell";
@@ -62,12 +63,12 @@ public class BeanShell {
 		// On transforme le code de la méthode pour pouvoir créer la trace au fur et à mesure
 		List<Node> newnodes = NodeNavigator.transformNodes(nodes, "");
 		
-		System.out.println("execution : "+challengeName+".challenge("+inputName+"="+input+")");
 		
 		CECElement errorElem = null;
 		int line=0;
 		// On exécute le code bloc par bloc
 		for (Node n : newnodes) {
+			//System.out.println(n);
 			line = n.getBegin().get().line;
 			
 			try {
@@ -75,14 +76,19 @@ public class BeanShell {
 
 			} catch (EvalError e) {
 				//line =  line de la boucle + line dans le block de la boucle - 1
-				errorElem =new CECElement(""+(line+e.getErrorLineNumber()-1), e.getErrorText(), e.getCause().toString());
+				errorElem =new CECElement(""+(line+e.getErrorLineNumber()-1), e.getErrorText(), ", fail : "+e.getCause().toString());
 				//System.out.println(e.getCause());
 				break;
 			}
 		}
 		
 		// On récupère la trace entière et on la retourne	
-		List<CECElement> cec = (List<CECElement>)interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN");
+		List<CECElement> cec = new ArrayList<CECElement>();
+		if(input instanceof String){
+			input="\""+input+"\"";
+		}
+		cec.add(new CECElement(lineMethod+"",challengeName+".challenge("+inputName+"="+input+")"," , appel de methode"));
+		cec.addAll( (List<CECElement>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN") );
 		if(errorElem != null){
 			//errorElem.setLine(cec.get(cec.size()-1).getLine());
 			cec.add(errorElem);
@@ -100,7 +106,7 @@ public class BeanShell {
 			int loopIteration = 0;
 
 			System.out.print("Line [" + e.getLine() + "] :");
-			System.out.println("	" + e.getVariable() + "	is the new value of " + e.getDescription());
+			System.out.println("	" + e.getVariable() + " " + e.getDescription());
 
 			printedList.add(e);
 		}
@@ -137,6 +143,7 @@ public class BeanShell {
 		visitor.visit(cu, null);
 		inputName = visitor.inputName;
 		challengeMethod = visitor.challengeMethod;
+		lineMethod=visitor.line;
 
 		return visitor.nodeList;
 	}

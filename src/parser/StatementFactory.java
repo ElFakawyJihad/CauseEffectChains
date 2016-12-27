@@ -11,26 +11,23 @@ import com.github.javaparser.ast.stmt.Statement;
  */
 public class StatementFactory {
 	public static Statement addInputToList(String line, String var, String description, String nameOfLoopIterationVar) {
-		description = "\"\\\"" + description + "\\\"\"";
+		//description = "\"\\\"" + description + "\\\"\"";	
 		
+		String varName = "\"" + var + "\""; //sous forme de chaine
+		description = "\" = \"+"+var; //sous forme de variable
 		
-		if(nameOfLoopIterationVar.contains(";")) {
+		/*if(nameOfLoopIterationVar.contains(";")) {
 			description += " + \"	| Loop iterations : \"";
 			for(String b : nameOfLoopIterationVar.split(";")) {
 				description += " + \"" + b + "=\" + " + b + " + \";\"";
 			}
-		}
+		}*/
 		
-		
-		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + var + ", " + description
+		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + varName + ", " + description
 				+ "));";
 
 		Statement statement = JavaParser.parseStatement(code);
 
-
-			
-		
-		
 		return statement;
 	}
 	
@@ -45,8 +42,10 @@ public class StatementFactory {
 				//description += " + \"" + b + "=\" + " + b + " + \";\"";
 			}
 		}
+		String varName="\""+iterationVar+"\"";
+		String description= "\" = \"+"+iterationVar;
 		
-		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + iterationVar + ", " + "\""+iterationVar+"\"));";
+		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + varName + ", " + description+"));";
 
 		Statement statement = JavaParser.parseStatement(code);
 		
