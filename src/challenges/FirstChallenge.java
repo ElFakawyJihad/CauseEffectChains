@@ -25,17 +25,18 @@ public class FirstChallenge implements Challenge<Integer> {
 	@Override
 	public void challenge(Integer input) {
 		int bonjour = 5;
+		int input1=input+10;
 		
-		input += 10; 
+		input1 += 10; 
 
 		
-		input /= 2;	
+		input1 /= 2;	
 		
 		for (int i = 0; i < 5; i++) {
 			
-			input += i;
+			input1 += i;
 			
-			input /= 0;
+			input1 /= 0;
 			
 		}
 		
