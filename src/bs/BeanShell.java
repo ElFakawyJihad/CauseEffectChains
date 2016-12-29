@@ -182,15 +182,22 @@ public class BeanShell {
 	 * @param states
 	 */
 	public void cascadeState(List<State> states){
+		List<State> stateToDel = new ArrayList<>(); 
 		for(int i=0;i<states.size();i++){
 			State state = states.get(i);
+			if(!state.addVar){
+				stateToDel.add(state);
+			}
 			if(i>0){
 				for (Variable item : states.get(i-1).variables) 
 					state.variables.add( new Variable(item.name,item.value,item.line) );
 			}
 			updateState(state);
-			//System.out.println("state "+i+" : "+states.get(i).toString());
 		}
+		
+		/*les states qui indique de supprimer une variable (fin de loop)
+		ne doivent pas apparaitre dans la trace, donc on les supprime*/
+		states.removeAll(stateToDel);
 	}
 	
 	/**
