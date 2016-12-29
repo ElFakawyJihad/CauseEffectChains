@@ -26,20 +26,23 @@ import com.github.javaparser.ast.stmt.TryStmt;
 import bsh.EvalError;
 
 public class NodeHandler {
+	private NodeHandler(){
+		throw new IllegalAccessError("Utility class");
+	}
 	public static List<Node> expressionStmtHandler(Node cNode, String nameOfLoopIterationVar) {
 		ExpressionStmt e = (ExpressionStmt) cNode;
 		
-		List<Node> newNodes = new ArrayList<Node>();
+		List<Node> newNodes = new ArrayList<>();
 		
 		String varName = handleSubExpression(e.getExpression());
 		
-		int line = cNode.getBegin().get().line; // On récupère la ligne
+		int line = cNode.getBegin().get().line; // On rï¿½cupï¿½re la ligne
 
 		newNodes.add(cNode); // On ajoute la Node de base
 		
 		Statement t = StatementFactory.addInputToList(String.valueOf(line), varName, varName, nameOfLoopIterationVar);
 		
-		// On ajoute la nouvelle Node, qui consiste à remplir la trace
+		// On ajoute la nouvelle Node, qui consiste ï¿½ remplir la trace
 		newNodes.add((Node) t); 
 		
 		return newNodes;
@@ -49,10 +52,10 @@ public class NodeHandler {
 		List<Node> newNodes = new ArrayList<Node>();
 		
 		
-		//On récupère les instructions dans la boucle
+		//On rï¿½cupï¿½re les instructions dans la boucle
 		BlockStmt blockStmt = (BlockStmt) ((NodeWithBody) cNode).getBody();
 
-		//La récupération est différente selon les types de boucles.
+		//La rï¿½cupï¿½ration est diffï¿½rente selon les types de boucles.
 		if(cNode instanceof ForeachStmt) {
 			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(0));
 		} else if (cNode instanceof ForStmt) {
@@ -60,8 +63,7 @@ public class NodeHandler {
 		}
 		
 		
-		//On ajoute une var de loop itération pour afficher les itérations de boucles
-		//handleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
+		//On ajoute une var de loop itï¿½ration pour afficher les itï¿½rations de boucles
 		loopHandleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
 
 		newNodes.add(cNode);
@@ -83,7 +85,7 @@ public class NodeHandler {
 	public static void loopHandleBlockStmt(Node cNode, String nameOfLoopIterationVar) throws EvalError {
 		BlockStmt blockStmt = (BlockStmt) cNode;
 
-		//On altère chacune de ses nodes recursivement
+		//On altï¿½re chacune de ses nodes recursivement
 		List<Node> tempNodes = NodeNavigator.transformNodes(blockStmt.getChildNodes(), nameOfLoopIterationVar); 
 
 		//On efface le bloc pour mettre les nouvelles nodes dedans
@@ -100,24 +102,23 @@ public class NodeHandler {
 	}
 	
 	/**
-	 * Permet de gérer les if. Prend en compte le cas des if sans accolade
-	 * mais je n'ai pas encore réussi à ajouter la trace pour l'expression dans ce if.
+	 * Permet de gï¿½rer les if. Prend en compte le cas des if sans accolade
+	 * mais je n'ai pas encore rï¿½ussi ï¿½ ajouter la trace pour l'expression dans ce if.
 	 * @param cNode
 	 * @return
 	 * @throws EvalError
 	 */
 	public static List<Node> ifStmtHandler(Node cNode, String nameOfLoopIterationVar) throws EvalError {
-		List<Node> newNodes = new ArrayList<Node>();
+		List<Node> newNodes = new ArrayList<>();
 		
 		IfStmt ifStmt = (IfStmt)cNode;
 		Node ifBlockNode = ifStmt.getChildNodes().get(1);
 		
-		//On récupère les instructions dans la boucle		
+		//On rï¿½cupï¿½re les instructions dans la boucle		
 		if(ifBlockNode instanceof BlockStmt) {			
 			handleBlockStmt(ifBlockNode, nameOfLoopIterationVar);
 			newNodes.add(ifStmt);
-		} else { //TODO, C'est compliqué à gérer les if sans accolade, pas de trace pour l'instant
-			//newNodes.addAll(expressionStmtHandler(ifBlockNode));
+		} else { //TODO, C'est compliquï¿½ ï¿½ gï¿½rer les if sans accolade, pas de trace pour l'instant
 			newNodes.add(ifStmt);
 		}
 		
@@ -126,8 +127,7 @@ public class NodeHandler {
 			Node elseBlockNode = ifStmt.getChildNodes().get(2);
 			if(elseBlockNode instanceof BlockStmt) {			
 				handleBlockStmt(elseBlockNode, nameOfLoopIterationVar);
-			} else { //TODO, C'est compliqué à gérer les else sans accolade, pas de trace pour l'instant
-				//newNodes.addAll(expressionStmtHandler(elseBlockNode));
+			} else { //TODO, C'est compliquï¿½ ï¿½ gï¿½rer les else sans accolade, pas de trace pour l'instant
 				newNodes.add(ifStmt);
 			}
 		}
@@ -136,14 +136,14 @@ public class NodeHandler {
 	}
 	
 	/**
-	 * Permet de gérer un bloc.
+	 * Permet de gï¿½rer un bloc.
 	 * @param cNode
 	 * @throws EvalError
 	 */
 	public static void handleBlockStmt(Node cNode, String nameOfLoopIterationVar) throws EvalError {
 		BlockStmt blockStmt = (BlockStmt) cNode;
 		
-		//On altère chacune de ses nodes recursivement
+		//On altï¿½re chacune de ses nodes recursivement
 		List<Node> tempNodes = NodeNavigator.transformNodes(blockStmt.getChildNodes(), nameOfLoopIterationVar); 
 		
 		//On efface le bloc pour mettre les nouvelles nodes dedans
@@ -171,13 +171,13 @@ public class NodeHandler {
 	}
 	
 	public static List<Node> switchStmtHandler(Node cNode, String nameOfLoopIterationVar) throws EvalError {
-		List<Node> newNodes = new ArrayList<Node>();
+		List<Node> newNodes = new ArrayList<>();
 		SwitchStmt switchStmt = (SwitchStmt) cNode;
 		
 		for (SwitchEntryStmt e : switchStmt.getEntries()) {
 			List<Node> tempNodes = NodeNavigator.transformNodes(e.getChildNodes(), nameOfLoopIterationVar); 
 			
-			if(e.getLabel().isPresent()) //Si ce n'est pas le default, on dégage le "case"
+			if(e.getLabel().isPresent()) //Si ce n'est pas le default, on dï¿½gage le "case"
 					tempNodes.remove(0);
 			
 			//On efface le bloc pour mettre les nouvelles nodes dedans
@@ -193,9 +193,9 @@ public class NodeHandler {
 	}
 	
 	/**
-	 * Pour gérer une expression, qui est un cran en dessous de ExpressionStmt
-	 * niveau hiérarchie. Permet surtout de récupérer le nom de la variable
-	 * concernée lors d'assignations simples.
+	 * Pour gï¿½rer une expression, qui est un cran en dessous de ExpressionStmt
+	 * niveau hiï¿½rarchie. Permet surtout de rï¿½cupï¿½rer le nom de la variable
+	 * concernï¿½e lors d'assignations simples.
 	 * 
 	 * @param e
 	 * @return
