@@ -1,14 +1,20 @@
 package bs;
 import bsh.Interpreter;
 import dd.impl.CECElement;
+import dd.impl.State;
+import dd.impl.Trace;
+import dd.impl.Variable;
 import parser.ChallengeVisitor;
 import parser.NodeNavigator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+
+import javax.swing.table.TableColumn;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -19,9 +25,11 @@ import bsh.EvalError;
 public class BeanShell {
 	public Interpreter interpreter;
 	public String inputName;
+	public Object inputValue;
 	public String challengeMethod;
 	public String challengeName;
-	public int lineMethod;
+	public int methodLine;
+	public ChallengeException ex=null;
 	
 	public BeanShell() {
 		this.challengeName = "BeanShell";
@@ -32,13 +40,14 @@ public class BeanShell {
 	}
 
 	public void initInterpreter() throws EvalError {
-		List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN = new ArrayList<CECElement>();
+		List<State> DEBUG_CAUSE_EFFECT_CHAIN = new ArrayList<State>();
 		
 		interpreter = new Interpreter();
 		
 		//Des import utiles pour l'interpreter
 		interpreter.eval("import java.util.*;");
-		interpreter.eval("import dd.impl.CECElement;");
+		//interpreter.eval("import dd.impl.CECElement;");
+		interpreter.eval("import dd.impl.State;");
 		
 		//On donne à l'interpreteur un objet dans le quel remplir sa trace. 
 		//Astuce pour lui faire connaître des classes étrangères par la même occasion.
@@ -46,7 +55,13 @@ public class BeanShell {
 		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN);
 	}
 	
-	public List<CECElement> getTrace(Object input) throws EvalError {
+	/**
+	 * execute la methode et retourne sa trace
+	 * @param input
+	 * @return
+	 * @throws EvalError
+	 */
+	public Trace getTrace(Object input) throws EvalError {
 		initInterpreter();
 
 		// On ajoute l'input, ici le 5 sera ensuite en dynamique.
@@ -62,9 +77,7 @@ public class BeanShell {
 		
 		// On transforme le code de la méthode pour pouvoir créer la trace au fur et à mesure
 		List<Node> newnodes = NodeNavigator.transformNodes(nodes, "");
-		
-		
-		CECElement errorElem = null;
+			
 		int line=0;
 		// On exécute le code bloc par bloc
 		for (Node n : newnodes) {
@@ -73,42 +86,57 @@ public class BeanShell {
 			
 			try {
 				interpreter.eval(n.toString());
-
 			} catch (EvalError e) {
 				//line =  line de la boucle + line dans le block de la boucle - 1
-				errorElem =new CECElement(""+(line+e.getErrorLineNumber()-1), e.getErrorText(), ", fail : "+e.getCause().toString());
-				//System.out.println(e.getCause());
+				ex = new ChallengeException( (line+e.getErrorLineNumber()-1), e.getErrorText(), e.getCause().toString() );
 				break;
 			}
 		}
 		
 		// On récupère la trace entière et on la retourne	
-		List<CECElement> cec = new ArrayList<CECElement>();
+		List<State> states = new ArrayList<State>();
 		if(input instanceof String){
-			input="\""+input+"\"";
+			inputValue="\""+input+"\"";
+		}else{
+			inputValue = input;
 		}
-		cec.add(new CECElement(lineMethod+"",challengeName+".challenge("+inputName+"="+input+")"," , appel de methode"));
-		cec.addAll( (List<CECElement>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN") );
-		if(errorElem != null){
-			//errorElem.setLine(cec.get(cec.size()-1).getLine());
-			cec.add(errorElem);
-		}
-		return cec;
+		states.add(new State(0,methodLine,inputName,input,true));
+		states.addAll( (List<State>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN") );
+		
+		cascadeState(states);
+		
+		
+		
+		Trace trace = new Trace(states,ex!=null);
+		trace.exception=ex;
+		trace.nameMethod=challengeName;
+		trace.lineMethod=methodLine;
+		trace.nameClass=challengeName;
+		trace.nameInput=inputName;
+		return trace;
 	}
 
-	public void printTrace(List<CECElement> DEBUG_CAUSE_EFFECT_CHAIN) {
+	/**
+	 * affiche la liste des etats 
+	 * @param states
+	 */
+	public void printTrace(List<State> states) {
 		System.out.println("_____ TRACE BEGIN _____");
+		System.out.println( "Line [" + methodLine + "] : "+challengeName+".challenge("+inputName/*+"="+inputValue*/+")" );
 		
-		List<CECElement> printedList = new ArrayList<CECElement>();
-
+		List<State> printedList = new ArrayList<State>();
+		int nb=0;
 		// On affiche la trace
-		for (CECElement e : DEBUG_CAUSE_EFFECT_CHAIN) {
-			int loopIteration = 0;
-
-			System.out.print("Line [" + e.getLine() + "] :");
-			System.out.println("	" + e.getVariable() + " " + e.getDescription());
-
+		for (State e : states) {
+			//int loopIteration = 0;
+			e.stateNumber=nb++;
+			System.out.print("Line [" + e.lineNumber + "] :");
+			System.out.println("	" + e.varCurrent.name + " = " + e.varCurrent.value);
 			printedList.add(e);
+		}
+		
+		if(ex!=null){
+			System.out.println("Line [" + ex.lineNumber + "] : "+ex.textCause+" = "+ex.message);
 		}
 		
 		System.out.println("_____ TRACE ENDS _____");
@@ -143,8 +171,60 @@ public class BeanShell {
 		visitor.visit(cu, null);
 		inputName = visitor.inputName;
 		challengeMethod = visitor.challengeMethod;
-		lineMethod=visitor.line;
+		methodLine=visitor.line;
 
 		return visitor.nodeList;
+	}
+	
+	/**
+	 * Genere la liste des variables dans un etat (state)
+	 * une state = (liste des variables de la state-1) + (variable courrante)
+	 * @param states
+	 */
+	public void cascadeState(List<State> states){
+		List<State> stateToDel = new ArrayList<>(); 
+		for(int i=0;i<states.size();i++){
+			State state = states.get(i);
+			if(!state.addVar){
+				stateToDel.add(state);
+			}
+			if(i>0){
+				for (Variable item : states.get(i-1).variables) 
+					state.variables.add( new Variable(item.name,item.value,item.line) );
+			}
+			updateState(state);
+		}
+		
+		/*les states qui indique de supprimer une variable (fin de loop)
+		ne doivent pas apparaitre dans la trace, donc on les supprime*/
+		states.removeAll(stateToDel);
+	}
+	
+	/**
+	 * ajout, modifie, ou supprime la variable courrante dans la liste
+	 * @param state
+	 */
+	private void updateState(State state){
+		//recup l'id de la variable courrante si elle est deja dans la liste
+		int idVar=-1;
+		for(int j=0;j<state.variables.size();j++){
+			if(state.variables.get(j).name.equals(state.varCurrent.name)){
+				idVar=j;
+			}
+		}
+
+		if(idVar == -1 && state.addVar){
+			//il faut ajouter la variable dans liste
+			state.variables.add(state.varCurrent);
+			
+		}else if( state.addVar ){
+			//il faut modifier la variable dans la liste
+			state.variables.get(idVar).value=state.varCurrent.value;
+			state.variables.get(idVar).line=state.varCurrent.line;
+			
+		}else if( !state.addVar){
+			//il faut supprimer une variable de la liste
+			state.variables.remove(idVar);
+		}
 	}
 }

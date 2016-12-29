@@ -12,25 +12,27 @@ import dd.Challenge;
  * @author Quentin
  *
  */
-public class TestChallenge implements Challenge<String> {
+public class TestChallenge implements Challenge<Integer> {
 	@Override
 	public Class getInputFormat() {
 		return Integer.class;
 	}
 
 	@Override
-	public List<String> getInputs() {
-		return Arrays.asList(new String[]{"toto", null});
+	public List<Integer> getInputs() {
+		return Arrays.asList(new Integer[]{1, 5});
 	}
 
 	@Override
-	public Object doIt(String input) {
+	public Object doIt(Integer input) {
 		return null;
 	}
 
 	@Override
-	public void challenge(String input) {
-		int size = input.length();
+	public void challenge(Integer input) {
+		
+		
+		int hello = input * 2;
 		
 	}
 }

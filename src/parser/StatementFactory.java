@@ -10,11 +10,11 @@ import com.github.javaparser.ast.stmt.Statement;
  *
  */
 public class StatementFactory {
-	public static Statement addInputToList(String line, String var, String description, String nameOfLoopIterationVar) {
+	public static Statement addInputToList(String line, String var, String valueVar, String nameOfLoopIterationVar) {
 		//description = "\"\\\"" + description + "\\\"\"";	
 		
 		String varName = "\"" + var + "\""; //sous forme de chaine
-		description = "\" = \"+"+var; //sous forme de variable
+		//decription= "\" = \"+"+var; //sous forme de variable
 		
 		/*if(nameOfLoopIterationVar.contains(";")) {
 			description += " + \"	| Loop iterations : \"";
@@ -23,14 +23,20 @@ public class StatementFactory {
 			}
 		}*/
 		
-		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + varName + ", " + description
-				+ "));";
+		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new State(" + 0 + ", " + line +", "+ varName + ", " + valueVar
+				+ ",true));";
 
 		Statement statement = JavaParser.parseStatement(code);
 
 		return statement;
 	}
 	
+	/**
+	 * debut de boulce, il faut ajouter la variable d'iteration
+	 * @param line
+	 * @param loopIteration
+	 * @return
+	 */
 	public static Statement loopBegin(String line,String loopIteration) {
 		//description = "\"\\\"" + description + "\\\"\"";
 		String iterationVar=null;
@@ -45,11 +51,31 @@ public class StatementFactory {
 		String varName="\""+iterationVar+"\"";
 		String description= "\" = \"+"+iterationVar;
 		
-		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement(\"" + line + "\", " + varName + ", " + description+"));";
+		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new State(0," + line + ", " + varName + ", " + iterationVar+",true));";
 
 		Statement statement = JavaParser.parseStatement(code);
 		
 		return statement;
 	}
+	
+	/**
+	 * boucle terminé, il faut supprimer la variable d'iteration
+	 * @param line
+	 * @param iterationVar
+	 * @return
+	 */
+	public static Statement loopEnd(String line,String iterationVar) {
+		//description = "\"\\\"" + description + "\\\"\"";
+
+		String varName="\""+iterationVar+"\"";
+		
+		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new State(0," + line + ", " + varName + ", " + null+",false));";
+
+		Statement statement = JavaParser.parseStatement(code);
+		
+		return statement;
+	}
+	
+	
 	
 }

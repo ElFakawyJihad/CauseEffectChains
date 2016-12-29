@@ -63,8 +63,13 @@ public class NodeHandler {
 		//On ajoute une var de loop itération pour afficher les itérations de boucles
 		//handleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
 		loopHandleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
-		
+
 		newNodes.add(cNode);
+		
+		//gestion de la fin de la boucle
+		Statement tEnd = StatementFactory.loopEnd(
+				String.valueOf(cNode.getEnd().get().line),nameOfLoopIterationVar );
+		newNodes.add(tEnd);
 		
 		return newNodes;
 	}
@@ -92,10 +97,6 @@ public class NodeHandler {
 		for (Node n : tempNodes) {
 			blockStmt.getStatements().add((Statement) n);
 		}
-		
-		Statement tEnd = StatementFactory.loopBegin(
-				String.valueOf(cNode.getEnd().get().line),nameOfLoopIterationVar );
-		blockStmt.getStatements().add(tEnd);
 	}
 	
 	/**
