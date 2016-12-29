@@ -20,6 +20,9 @@ public class CECElement implements ChainElement {
 
 	@Override
 	public String getVariable() {
+		if(var==null){
+			return null;
+		}
 		return var.toString();
 	}
 

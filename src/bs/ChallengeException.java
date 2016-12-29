@@ -1,9 +1,9 @@
 package bs;
 
 public class ChallengeException {
-	int lineNumber;
-	String textCause;
-	String message;
+	public int lineNumber;
+	public String textCause;
+	public String message;
 
 	public ChallengeException(int line, String cause, String mess) {
 		lineNumber=line;

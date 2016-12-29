@@ -19,11 +19,11 @@ public class State {
 	public State(int nb, int line, String nameVar, Object valueVar, boolean add) {
 		stateNumber= nb;
 		lineNumber=line;
-		varCurrent = new Variable(nameVar, valueVar);
+		varCurrent = new Variable(nameVar, valueVar,line);
 		addVar=add;
 	}
 	
 	public String toString(){
-		return varCurrent.toString()+","+variables.toString();
+		return variables.toString();
 	}
 }

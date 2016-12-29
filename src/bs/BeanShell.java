@@ -28,7 +28,7 @@ public class BeanShell {
 	public Object inputValue;
 	public String challengeMethod;
 	public String challengeName;
-	public int lineMethod;
+	public int methodLine;
 	public ChallengeException ex=null;
 	
 	public BeanShell() {
@@ -94,19 +94,25 @@ public class BeanShell {
 		}else{
 			inputValue = input;
 		}
-		states.add(new State(0,lineMethod,inputName,input,true));
+		states.add(new State(0,methodLine,inputName,input,true));
 		states.addAll( (List<State>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN") );
 		
 		cascadeState(states);
 		
+		
+		
 		Trace trace = new Trace(states,ex!=null);
 		trace.exception=ex;
+		trace.nameMethod=challengeName;
+		trace.lineMethod=methodLine;
+		trace.nameClass=challengeName;
+		trace.nameInput=inputName;
 		return trace;
 	}
 
 	public void printTrace(List<State> states) {
 		System.out.println("_____ TRACE BEGIN _____");
-		System.out.println( "Line [" + lineMethod + "] : "+challengeName+".challenge("+inputName/*+"="+inputValue*/+")" );
+		System.out.println( "Line [" + methodLine + "] : "+challengeName+".challenge("+inputName/*+"="+inputValue*/+")" );
 		
 		List<State> printedList = new ArrayList<State>();
 		int nb=0;
@@ -155,7 +161,7 @@ public class BeanShell {
 		visitor.visit(cu, null);
 		inputName = visitor.inputName;
 		challengeMethod = visitor.challengeMethod;
-		lineMethod=visitor.line;
+		methodLine=visitor.line;
 
 		return visitor.nodeList;
 	}
@@ -169,7 +175,7 @@ public class BeanShell {
 			State state = states.get(i);
 			if(i>0){
 				for (Variable item : states.get(i-1).variables) 
-					state.variables.add( new Variable(item.name,item.value) );
+					state.variables.add( new Variable(item.name,item.value,item.line) );
 			}
 			updateState(state);
 			//System.out.println("state "+i+" : "+states.get(i).toString());
@@ -196,6 +202,7 @@ public class BeanShell {
 		}else if( state.addVar ){
 			//il faut modifier la variable dans la liste
 			state.variables.get(idVar).value=state.varCurrent.value;
+			state.variables.get(idVar).line=state.varCurrent.line;
 			
 		}else if( !state.addVar){
 			//il faut supprimer une variable de la liste

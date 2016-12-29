@@ -67,7 +67,7 @@ public class StateDelta {
 					if( ( vF.value!=null && !(vF.value.equals(vO.value)) )  
 							||  (vO.value!=null && !(vO.value.equals(vF.value))) ) {
 						
-							list.add( new Delta(vF.name,vF.value,vO.value));
+							list.add( new Delta(vF.name,vF.value,vO.value,vF.line));
 					}
 				}
 			}
@@ -77,7 +77,7 @@ public class StateDelta {
 		lVF.removeAll(listDelVar);//les variables presentes dans les 2 traces = a supprimer
 		//variable que dans trace fail = delta
 		for(Variable v : lVF){
-				list.add(new Delta(v.name,v.value,null));
+				list.add(new Delta(v.name,v.value,null,v.line));
 		}
 		
 		return list;

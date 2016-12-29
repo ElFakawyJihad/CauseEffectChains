@@ -7,6 +7,7 @@ import java.util.List;
 import bs.BeanShell;
 import bs.BeanShellTest;
 import bsh.EvalError;
+import dd.ChainElement;
 import dd.Challenge;
 import dd.DDebugger;
 
@@ -42,24 +43,17 @@ public class DDebuggerImpl implements DDebugger<Object> {
 			System.out.println("Aucune trace Ok");
 			return null;
 		}
-		/*System.out.println("___ traceF"+traceFail.states.size());
-		for(State s: traceFail.states){
-			System.out.println(s);
-		}
-		System.out.println("___ traceO"+traceOk.states.size());
-		for(State s: traceOk.states){
-			System.out.println(s);
-		}*/
-		//on recup les differences
+		System.out.println("___ TRACE FAIL STATES ___");
+		System.out.print(traceFail);
+		System.out.println("___ TRACE OK STATES ___");
+		System.out.print(traceOk);
+		
+		//on recup les differences entre les traces
 		StateDelta stateDelta =  new StateDelta(traceFail, traceOk);
 		List<Delta> deltas  = stateDelta.getDeltas();
-		//deltas.add
-		System.out.println("___ listdelta");
-		for(Delta d: deltas){
-			System.out.println(d);
-		}
+		
 		//on cree la chaine
-		CEC cec = getCEC(deltas);
+		CEC cec = getCEC(deltas,traceFail);
 		return cec;
 	}
 
@@ -78,10 +72,20 @@ public class DDebuggerImpl implements DDebugger<Object> {
 		return trace;
 	}
 	
-	private CEC getCEC(List<Delta> deltas){
-		//for()
+	private CEC getCEC(List<Delta> deltas,Trace traceF){
+		ArrayList<ChainElement> ce =  new ArrayList<>();
 		
-		return new CEC();
+		for(Delta d:deltas){
+			ce.add(new CECElement(d.line+"", d.valueFail, d.nameVariable));
+		}
+		//exception a la fin
+		ce.add(new CECElement(
+				traceF.exception.lineNumber+"",
+				traceF.exception.message,
+				traceF.exception.textCause
+				));
+		
+		return new CEC(ce);
 	}
 
 }
