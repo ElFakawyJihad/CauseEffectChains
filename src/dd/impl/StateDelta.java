@@ -3,6 +3,11 @@ package dd.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Permet de comparer des traces, c'est a dire des listes d'etats
+ * @author Admin
+ *
+ */
 public class StateDelta {
 	public List<Delta> deltas;	
 	Trace traceFail;
@@ -14,6 +19,10 @@ public class StateDelta {
 		deltas = new ArrayList<Delta>();
 	}
 	
+	/**
+	 * retorune la liste des differences (variable) entre 2 trace (liste d'etat)
+	 * @return
+	 */
 	public List<Delta> getDeltas() {
 		List<Delta> deltas = new ArrayList<>();
 		int iF=0;
@@ -52,6 +61,12 @@ public class StateDelta {
 		return deltas;
 	}
 	
+	/**
+	 * Compare 2 etats et retourne leurs differences (variables)
+	 * @param sFail
+	 * @param sOk
+	 * @return
+	 */
 	public List<Delta> compare(State sFail, State sOk){
 		List<Variable> lVF= sFail.variables;
 		List<Variable> lVO= sOk.variables;

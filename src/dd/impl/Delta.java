@@ -2,6 +2,11 @@ package dd.impl;
 
 import java.util.HashMap;
 
+/**
+ * Represente une difference (variable) qui cause le problème
+ * @author Admin
+ *
+ */
 public class Delta {
 	public String nameVariable;
 	public Object valueFail;

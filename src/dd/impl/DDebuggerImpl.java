@@ -57,6 +57,12 @@ public class DDebuggerImpl implements DDebugger<Object> {
 		return cec;
 	}
 
+	/**
+	 * execute la methode avec un parametre
+	 * @param input
+	 * @param challengeName
+	 * @return
+	 */
 	private Trace getTrace(Object input, String challengeName) {
 		BeanShell beanshell = new BeanShell(challengeName);
 		Trace trace =null;
@@ -72,6 +78,12 @@ public class DDebuggerImpl implements DDebugger<Object> {
 		return trace;
 	}
 	
+	/**
+	 * retourne la chaine de causea effet a partir des deltas
+	 * @param deltas
+	 * @param traceF
+	 * @return
+	 */
 	private CEC getCEC(List<Delta> deltas,Trace traceF){
 		ArrayList<ChainElement> ce =  new ArrayList<>();
 		

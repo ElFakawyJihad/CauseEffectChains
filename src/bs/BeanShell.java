@@ -55,6 +55,12 @@ public class BeanShell {
 		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN);
 	}
 	
+	/**
+	 * execute la methode et retourne sa trace
+	 * @param input
+	 * @return
+	 * @throws EvalError
+	 */
 	public Trace getTrace(Object input) throws EvalError {
 		initInterpreter();
 
@@ -110,6 +116,10 @@ public class BeanShell {
 		return trace;
 	}
 
+	/**
+	 * affiche la liste des etats 
+	 * @param states
+	 */
 	public void printTrace(List<State> states) {
 		System.out.println("_____ TRACE BEGIN _____");
 		System.out.println( "Line [" + methodLine + "] : "+challengeName+".challenge("+inputName/*+"="+inputValue*/+")" );
@@ -167,6 +177,7 @@ public class BeanShell {
 	}
 	
 	/**
+	 * Genere la liste des variables dans un etat (state)
 	 * une state = (liste des variables de la state-1) + (variable courrante)
 	 * @param states
 	 */
