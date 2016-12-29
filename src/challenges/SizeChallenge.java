@@ -30,6 +30,11 @@ public class SizeChallenge implements Challenge<String> {
 		
 		int size=tmp.length();
 		
+		for (int i = 0; i < 2; i++) {
+			
+			size=i;
+		}
+		
 		tmp =input;
 		
 		size = tmp.length();

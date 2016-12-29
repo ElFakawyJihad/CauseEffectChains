@@ -46,7 +46,7 @@ public class BeanShell {
 		
 		//Des import utiles pour l'interpreter
 		interpreter.eval("import java.util.*;");
-		interpreter.eval("import dd.impl.CECElement;");
+		//interpreter.eval("import dd.impl.CECElement;");
 		interpreter.eval("import dd.impl.State;");
 		
 		//On donne à l'interpreteur un objet dans le quel remplir sa trace. 
