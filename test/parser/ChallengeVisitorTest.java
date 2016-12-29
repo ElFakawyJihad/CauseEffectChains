@@ -47,7 +47,7 @@ public class ChallengeVisitorTest {
 
 		ChallengeVisitor visitor = new ChallengeVisitor();
 		visitor.visit(cu, null);
-		assertTrue(visitor.challengeMethod.contains("public void challenge(String input)"));
+		assertTrue(visitor.challengeMethod.contains("public void challenge(Integer input)"));
 	}
 	@Test 
 	public void test_visit_variable(){
@@ -60,7 +60,8 @@ public class ChallengeVisitorTest {
 
 		ChallengeVisitor visitor = new ChallengeVisitor();
 		visitor.visit(cu, null);
-		assertTrue(visitor.challengeMethod.contains("int size = input.length();"));
+		System.out.println();
+		assertTrue(visitor.challengeMethod.contains("int hello = input * 2;"));
 	}
 	@Test 
 	public void test_visit_size_Node_List(){
@@ -87,7 +88,7 @@ public class ChallengeVisitorTest {
 
 		ChallengeVisitor visitor = new ChallengeVisitor();
 		visitor.visit(cu, null);
-		assertEquals("int size = input.length();", visitor.nodeList.get(0).toString());
+		assertEquals("int hello = input * 2;", visitor.nodeList.get(0).toString());
 		
 	}
 
