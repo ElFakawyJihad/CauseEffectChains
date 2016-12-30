@@ -1,7 +1,11 @@
 package dd.impl;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import dd.CauseEffectChain;
 import dd.Challenge;
@@ -21,6 +25,8 @@ public class Main {
 		System.out.println(args[1]);
 		if(args[0].equals("-f")){
 			runOnFile( Paths.get(args[1]) );
+		}else if(args[0].equals("-d")){
+			runOnDir(args[1]);
 		}
 	}
 	
@@ -39,6 +45,36 @@ public class Main {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public static void runOnDir(String path){
+		// Create a File object on the root of the directory containing the class file
+		File file = new File(path);
+
+		try {
+		    // Convert File to a URL
+		    URL url = file.toURL();   
+		    URL[] urls = new URL[]{url};
+
+		    // Create a new class loader with the directory
+		    ClassLoader cl = new URLClassLoader(urls);
+		    
+		    Class cls = cl.loadClass("challenges.FirstChallenge");
+		    Object aChallenge;
+			try {
+				aChallenge = cls.newInstance();
+				if(aChallenge instanceof Challenge){
+					CauseEffectChain cec = d.debug((Challenge) aChallenge);
+					System.out.println(cec);
+				}
+			} catch (InstantiationException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    
+		} catch (MalformedURLException e) {
+		} catch (ClassNotFoundException e) {
 		}
 	}
 }
