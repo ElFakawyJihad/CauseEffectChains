@@ -1,11 +1,9 @@
 package dd.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import bs.BeanShell;
-import bs.BeanShellTest;
 import bsh.EvalError;
 import dd.ChainElement;
 import dd.Challenge;
@@ -78,7 +76,7 @@ public class DDebuggerImpl implements DDebugger<Object> {
 	}
 	
 	/**
-	 * retourne la chaine de cause a effet a partir des deltas
+	 * Retourne la chaine de cause a effet a partir des deltas
 	 * @param deltas
 	 * @param traceF
 	 * @return

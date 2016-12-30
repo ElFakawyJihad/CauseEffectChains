@@ -47,7 +47,15 @@ public class BeanShell {
 		
 		//Des import utiles pour l'interpreter
 		interpreter.eval("import java.util.*;");
-		//interpreter.eval("import dd.impl.CECElement;");
+		interpreter.eval("import java.lang.*;");
+		interpreter.eval("import java.awt.*;");
+		interpreter.eval("import java.beans.*;");
+		interpreter.eval("import java.io.*;");
+		interpreter.eval("import java.net.*;");
+		interpreter.eval("import java.rmi.*;");
+		interpreter.eval("import java.security.*;");
+		interpreter.eval("import java.text.*;");
+
 		interpreter.eval("import dd.impl.State;");
 		
 		//On donne à l'interpreteur un objet dans le quel remplir sa trace. 
@@ -94,6 +102,7 @@ public class BeanShell {
 			try {
 				interpreter.eval(n.toString());
 			} catch (EvalError e) {
+				System.out.println(e.getMessage());
 				//line =  line de la boucle + line dans le block de la boucle - 1
 				
 				String cause;				
@@ -114,11 +123,9 @@ public class BeanShell {
 			inputValue = input;
 		}
 		states.add(new State(0,methodLine,inputName,input,true));
-		states.addAll( (List<State>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN") );
+		states.addAll((List<State>) interpreter.get("DEBUG_CAUSE_EFFECT_CHAIN"));
 		
 		cascadeState(states);
-		
-		
 		
 		Trace trace = new Trace(states,ex!=null);
 		trace.exception=ex;
@@ -217,7 +224,7 @@ public class BeanShell {
 	 * ajout, modifie, ou supprime la variable courrante dans la liste
 	 * @param state
 	 */
-	private void updateState(State state){
+	private void updateState(State state) {
 		//recup l'id de la variable courrante si elle est deja dans la liste
 		int idVar=-1;
 		for(int j=0;j<state.variables.size();j++){

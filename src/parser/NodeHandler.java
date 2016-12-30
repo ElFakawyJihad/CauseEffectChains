@@ -220,7 +220,15 @@ public class NodeHandler {
 			case "MethodCallExpr":
 				MethodCallExpr mc_Expr = (MethodCallExpr) e;
 				List<Node> mc_Nodes = mc_Expr.getChildNodes();
-				SimpleName mc_nameExpr = (SimpleName) mc_Nodes.get(0);
+				
+				SimpleName mc_nameExpr = null;
+				for(Node n : mc_Nodes) {
+					if(n instanceof SimpleName) {
+						mc_nameExpr = (SimpleName) n;
+						break;
+					}
+				}
+				if(mc_nameExpr == null) return "";
 				return mc_nameExpr.toString();
 			default:
 				return "";
