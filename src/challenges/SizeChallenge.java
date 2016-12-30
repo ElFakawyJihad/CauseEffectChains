@@ -9,8 +9,7 @@ public class SizeChallenge implements Challenge<String> {
 
 	@Override
 	public Class<? extends String> getInputFormat() {
-		// TODO Auto-generated method stub
-		return null;
+		return String.class;
 	}
 
 	@Override
@@ -20,22 +19,20 @@ public class SizeChallenge implements Challenge<String> {
 
 	@Override
 	public Object doIt(String input) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void challenge(String input) {
+	public void challenge(String input) {		
 		String tmp = "titi";
 		
-		int size=tmp.length();
+		int size = tmp.length();
 		
 		for (int i = 0; i < 2; i++) {
-			
 			size=i;
 		}
 		
-		tmp =input;
+		tmp = input;
 		
 		size = tmp.length();
 	}
