@@ -228,16 +228,16 @@ public class BeanShell {
 
 		if(idVar == -1 && state.addVar){
 			//il faut ajouter la variable dans liste
-			state.variables.add(state.varCurrent);
-			
-		}else if( state.addVar ){
+			state.variables.add(state.varCurrent);			
+		} else if( state.addVar ) {
 			//il faut modifier la variable dans la liste
 			state.variables.get(idVar).value=state.varCurrent.value;
 			state.variables.get(idVar).line=state.varCurrent.line;
 			
-		}else if( !state.addVar){
+		} else if( !state.addVar) {
 			//il faut supprimer une variable de la liste
-			state.variables.remove(idVar);
+			if(idVar != -1)
+				state.variables.remove(idVar);
 		}
 	}
 }

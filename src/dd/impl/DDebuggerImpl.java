@@ -73,13 +73,12 @@ public class DDebuggerImpl implements DDebugger<Object> {
 			e.printStackTrace();
 		}
 
-		//C'est temporaire, jusqu'à ce qu'on fasse une vraie chaine de cause à effet
 		beanshell.printTrace(trace.states);
 		return trace;
 	}
 	
 	/**
-	 * retourne la chaine de causea effet a partir des deltas
+	 * retourne la chaine de cause a effet a partir des deltas
 	 * @param deltas
 	 * @param traceF
 	 * @return
