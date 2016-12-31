@@ -11,17 +11,8 @@ import com.github.javaparser.ast.stmt.Statement;
  */
 public class StatementFactory {
 	public static Statement addInputToList(String line, String var, String valueVar, String nameOfLoopIterationVar) {
-		//description = "\"\\\"" + description + "\\\"\"";	
 		
 		String varName = "\"" + var + "\""; //sous forme de chaine
-		//decription= "\" = \"+"+var; //sous forme de variable
-		
-		/*if(nameOfLoopIterationVar.contains(";")) {
-			description += " + \"	| Loop iterations : \"";
-			for(String b : nameOfLoopIterationVar.split(";")) {
-				description += " + \"" + b + "=\" + " + b + " + \";\"";
-			}
-		}*/
 		
 		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new State(" + 0 + ", " + line +", "+ varName + ", " + valueVar
 				+ ",true));";
