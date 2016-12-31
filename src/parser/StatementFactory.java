@@ -3,7 +3,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.stmt.Statement;
 
 /**
- * Permet de créer des Statement qui peuvent être ajoutés dans des Nodes. On ne
+ * Permet de crï¿½er des Statement qui peuvent ï¿½tre ajoutï¿½s dans des Nodes. On ne
  * peut pas ajouter directement un Node dans les listes.
  * 
  * @author Quentin
@@ -49,7 +49,6 @@ public class StatementFactory {
 			}
 		}
 		String varName="\""+iterationVar+"\"";
-		String description= "\" = \"+"+iterationVar;
 		
 		String code = "DEBUG_CAUSE_EFFECT_CHAIN.add(new State(0," + line + ", " + varName + ", " + iterationVar+",true));";
 
@@ -59,7 +58,7 @@ public class StatementFactory {
 	}
 	
 	/**
-	 * boucle terminé, il faut supprimer la variable d'iteration
+	 * boucle terminï¿½, il faut supprimer la variable d'iteration
 	 * @param line
 	 * @param iterationVar
 	 * @return
