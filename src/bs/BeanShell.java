@@ -58,12 +58,12 @@ public class BeanShell {
 
 		interpreter.eval("import dd.impl.State;");
 		
-		//On donne à l'interpreteur un objet dans le quel remplir sa trace. 
-		//Astuce pour lui faire connaître des classes étrangèes par la même occasion.
-		//Le nom à rallonge permet d'éviter un doublon de variables
+		//On donne ï¿½ l'interpreteur un objet dans le quel remplir sa trace. 
+		//Astuce pour lui faire connaï¿½tre des classes ï¿½trangï¿½es par la mï¿½me occasion.
+		//Le nom ï¿½ rallonge permet d'ï¿½viter un doublon de variables
 		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN);
 		
-		//Implémentation du mot clé assert qui n'est pas géré par BeanShell
+		//Implï¿½mentation du mot clï¿½ assert qui n'est pas gï¿½rï¿½ par BeanShell
 		interpreter.eval("assert(boolean condition) { "
 				+ 			"if (!condition) "
 				+ 				"throw new AssertionError();"
@@ -82,19 +82,19 @@ public class BeanShell {
 		// On ajoute l'input, ici le 5 sera ensuite en dynamique.
 		interpreter.set("input", input);
 
-		// On récupère la classe où se trouve la méthode challenge qui nous intéresse
+		// On rï¿½cupï¿½re la classe oï¿½ se trouve la mï¿½thode challenge qui nous intï¿½resse
 		File tempFile = new File("");
 		String filePath = tempFile.getAbsolutePath() + "/src/challenges/" + challengeName + ".java";
 		String javaCode = readFile(filePath);
 
-		// On récupère la méthode challenge sous forme de nodes
+		// On rï¿½cupï¿½re la mï¿½thode challenge sous forme de nodes
 		List<Node> nodes = getChallengeMethodToNodes(javaCode);
 		
-		// On transforme le code de la méthode pour pouvoir créer la trace au fur et à mesure
+		// On transforme le code de la mï¿½thode pour pouvoir crï¿½er la trace au fur et ï¿½ mesure
 		List<Node> newnodes = NodeNavigator.transformNodes(nodes, "");
 			
 		int line=0;
-		// On exécute le code bloc par bloc
+		// On exï¿½cute le code bloc par bloc
 		for (Node n : newnodes) {
 			//System.out.println(n);
 			line = n.getBegin().get().line;
@@ -108,14 +108,13 @@ public class BeanShell {
 				String cause;				
 				if(e.getCause() == null) cause = "Assertion Exception";
 				else cause = e.getCause().toString();
-				
-				Logger.getLogger("bs.BeanShell").info(e.getErrorText());
+				Logger.getLogger(BeanShell.class.getName()).info(e.getErrorText());
 				ex = new ChallengeException( (line+e.getErrorLineNumber()-1), e.getErrorText(), cause );
 				break;
 			}
 		}
 		
-		// On récupère la trace entière et on la retourne	
+		// On rï¿½cupï¿½re la trace entiï¿½re et on la retourne	
 		List<State> states = new ArrayList<State>();
 		if(input instanceof String){
 			inputValue="\""+input+"\"";
@@ -170,18 +169,20 @@ public class BeanShell {
 	 */
 	public String readFile(String fileName) {
 		try {
-			return new Scanner(new File(fileName)).useDelimiter("\\Z").next();
+			Scanner sc=new Scanner(new File(fileName));
+			String retour=sc.useDelimiter("\\Z").next();
+			sc.close();
+			return retour;
 		} catch (FileNotFoundException e) {
-			System.out.println("File not found");
-			return "";
+			throw new RuntimeException(e);
 		}
 	}
 
 	/**
-	 * Méthode de récupération de la méthode qui nous intéresse depuis la classe
-	 * complète
+	 * Mï¿½thode de rï¿½cupï¿½ration de la mï¿½thode qui nous intï¿½resse depuis la classe
+	 * complï¿½te
 	 * 
-	 * @param fullClass
+	 * @param fullClasslin
 	 * @return
 	 */
 	public List<Node> getChallengeMethodToNodes(String fullClass) {
