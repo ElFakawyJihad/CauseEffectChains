@@ -171,6 +171,7 @@ public class BeanShell {
 		try {
 			Scanner sc=new Scanner(new File(fileName));
 			String retour=sc.useDelimiter("\\Z").next();
+			if (sc != null)
 			sc.close();
 			return retour;
 		} catch (FileNotFoundException e) {
