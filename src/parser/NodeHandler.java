@@ -54,23 +54,24 @@ public class NodeHandler {
 		
 		//On r�cup�re les instructions dans la boucle
 		BlockStmt blockStmt = (BlockStmt) ((NodeWithBody) cNode).getBody();
+		String nameOfLoopIterateVar="";
 
 		//La r�cup�ration est diff�rente selon les types de boucles.
 		if(cNode instanceof ForeachStmt) {
-			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(0));
+			nameOfLoopIterateVar = nameOfLoopIterationVar+handleSubExpression((Expression) cNode.getChildNodes().get(0));
 		} else if (cNode instanceof ForStmt) {
-			nameOfLoopIterationVar += handleSubExpression((Expression) cNode.getChildNodes().get(1));
+			nameOfLoopIterateVar = nameOfLoopIterationVar+handleSubExpression((Expression) cNode.getChildNodes().get(1));
 		}
 		
 		
 		//On ajoute une var de loop it�ration pour afficher les it�rations de boucles
-		loopHandleBlockStmt(blockStmt, nameOfLoopIterationVar+";");
+		loopHandleBlockStmt(blockStmt, nameOfLoopIterateVar+";");
 
 		newNodes.add(cNode);
 		
 		//gestion de la fin de la boucle
 		Statement tEnd = StatementFactory.loopEnd(
-				String.valueOf(cNode.getEnd().get().line),nameOfLoopIterationVar );
+				String.valueOf(cNode.getEnd().get().line),nameOfLoopIterateVar );
 		newNodes.add(tEnd);
 		
 		return newNodes;
