@@ -175,7 +175,7 @@ public class BeanShell {
 			sc.close();
 			return retour;
 		} catch (FileNotFoundException e) {
-			throw new FileNotFoundException(e.getMessage());
+			throw e;
 		}
 	}
 
