@@ -75,7 +75,7 @@ public class DDebuggerImpl implements DDebugger<Object> {
 		try {
 			trace = beanshell.getTrace(input);
 		} catch (EvalError e) {
-			e.printStackTrace();
+			throw new EvalErrorRuntimeException(e);
 		}
 
 		beanshell.printTrace(trace.states);
