@@ -27,10 +27,10 @@ public class Trace {
 	
 	
 	public String toString(){
-		String s="";
+		StringBuilder s = new StringBuilder();
 		for(State st: states){
-			s=s+st.toString()+"\n";
+			s.append(st.toString()+"\n");
 		}
-		return s;
+		return s.toString();
 	}
 }
