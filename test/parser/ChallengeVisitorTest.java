@@ -3,6 +3,7 @@ package parser;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import bs.BeanShell;
 public class ChallengeVisitorTest {
 
 	@Test 
-	public void test_visit_inputName(){
+	public void test_visit_inputName() throws FileNotFoundException{
 		BeanShell bs = new BeanShell("TestChallenge");
 		File tempFile = new File("");
 		String filePath = tempFile.getAbsolutePath() + "/src/challenges/TestChallenge.java";
@@ -24,7 +25,7 @@ public class ChallengeVisitorTest {
 		assertEquals("input", visitor.inputName);
 	}
 	@Test 
-	public void test_visit_override(){
+	public void test_visit_override() throws FileNotFoundException{
 		BeanShell bs = new BeanShell("TestChallenge");
 		
 		File tempFile = new File("");
@@ -37,7 +38,7 @@ public class ChallengeVisitorTest {
 		assertTrue(visitor.challengeMethod.contains("@Override"));
 	}
 	@Test 
-	public void test_visit_Method(){
+	public void test_visit_Method() throws FileNotFoundException{
 		BeanShell bs = new BeanShell("TestChallenge");
 		
 		File tempFile = new File("");
@@ -50,7 +51,7 @@ public class ChallengeVisitorTest {
 		assertTrue(visitor.challengeMethod.contains("public void challenge(Integer input)"));
 	}
 	@Test 
-	public void test_visit_variable(){
+	public void test_visit_variable() throws FileNotFoundException{
 		BeanShell bs = new BeanShell("TestChallenge");
 		
 		File tempFile = new File("");
@@ -64,7 +65,7 @@ public class ChallengeVisitorTest {
 		assertTrue(visitor.challengeMethod.contains("int hello = input * 2;"));
 	}
 	@Test 
-	public void test_visit_size_Node_List(){
+	public void test_visit_size_Node_List() throws FileNotFoundException{
 		BeanShell bs = new BeanShell("TestChallenge");
 		
 		File tempFile = new File("");
@@ -78,7 +79,7 @@ public class ChallengeVisitorTest {
 	}
 	
 	@Test
-	public void test_verif_first_element_List(){
+	public void test_verif_first_element_List() throws FileNotFoundException{
 		BeanShell bs = new BeanShell("TestChallenge");
 		
 		File tempFile = new File("");

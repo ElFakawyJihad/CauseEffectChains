@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class BeanShellTest {
 	}
 	
 	@Test
-	public void test_readFile() {
+	public void test_readFile() throws FileNotFoundException {
 		BeanShell bs = new BeanShell();
 		
 		File tempFile = new File("");
@@ -45,7 +46,7 @@ public class BeanShellTest {
 	}
 	
 	@Test
-	public void test_readFile_exception() {
+	public void test_readFile_exception() throws FileNotFoundException {
 		BeanShell bs = new BeanShell();
 		
 		File tempFile = new File("");
