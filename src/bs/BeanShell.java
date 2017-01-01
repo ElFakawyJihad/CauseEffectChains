@@ -1,6 +1,7 @@
 package bs;
 import bsh.Interpreter;
 import dd.impl.CECElement;
+import dd.impl.EvalErrorRuntimeException;
 import dd.impl.State;
 import dd.impl.Trace;
 import dd.impl.Variable;
@@ -109,9 +110,9 @@ public class BeanShell {
 				String cause;				
 				if(e.getCause() == null) cause = "Assertion Exception";
 				else cause = e.getCause().toString();
-				Logger.getLogger(BeanShell.class.getName()).info(e.getErrorText());
 				ex = new ChallengeException( (line+e.getErrorLineNumber()-1), e.getErrorText(), cause );
 				break;
+
 			}
 		}
 		
@@ -169,13 +170,16 @@ public class BeanShell {
 	 * @return
 	 */
 	public String readFile(String fileName) throws FileNotFoundException {
+		Scanner sc = null;
 		try {
-			Scanner sc=new Scanner(new File(fileName));
+			sc=new Scanner(new File(fileName));
 			String retour=sc.useDelimiter("\\Z").next();
 			sc.close();
 			return retour;
 		} catch (FileNotFoundException e) {
 			throw e;
+		}finally{
+			sc.close();
 		}
 	}
 
