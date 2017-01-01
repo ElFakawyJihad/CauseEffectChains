@@ -21,7 +21,7 @@ public class RacistChallenge implements Challenge<Color> {
 
 	@Override
 	public List<Color> getInputs() {
-		return Arrays.asList(new Color[]{Color.WHITE, Color.BLUE, Color.CYAN, Color.RED});
+		return Arrays.asList(new Color[] { Color.WHITE, Color.BLUE, Color.CYAN, Color.RED });
 	}
 
 	@Override
@@ -30,9 +30,11 @@ public class RacistChallenge implements Challenge<Color> {
 	}
 
 	@Override
-	public void challenge(Color input) {		
-		int blueLevel = input.getBlue();
-		assert (blueLevel != 0);
+	public void challenge(Color input) {
+		if (input != null) {
+			int blueLevel = input.getBlue();
+			assert blueLevel != 0;
+		}
 	}
 
 }
