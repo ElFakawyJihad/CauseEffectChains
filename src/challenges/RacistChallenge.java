@@ -30,6 +30,7 @@ public class RacistChallenge implements Challenge<Color> {
 	}
 
 	@Override
+
 	public void challenge(Color input) {
 		if (input != null) {
 			int blueLevel = input.getBlue();
