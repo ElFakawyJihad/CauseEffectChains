@@ -25,7 +25,6 @@ public class DDebuggerImpl implements DDebugger<Object> {
 				} catch (FileNotFoundException e) {
 					throw new FileNotFoundRuntimeException(e);
 				}
-				//c.challenge(input);
 		}
 		
 		//recup une trace fail et une trace ok
@@ -43,10 +42,12 @@ public class DDebuggerImpl implements DDebugger<Object> {
 			System.out.println("Aucune trace fail");
 			return null;
 		}
+		
 		if(traceOk==null){
 			System.out.println("Aucune trace Ok");
 			return null;
 		}
+		
 		System.out.println("___ TRACE FAIL STATES ___");
 		System.out.print(traceFail);
 		System.out.println("___ TRACE OK STATES ___");

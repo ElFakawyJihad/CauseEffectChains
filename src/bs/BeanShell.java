@@ -58,12 +58,12 @@ public class BeanShell {
 
 		interpreter.eval("import dd.impl.State;");
 		
-		//On donne � l'interpreteur un objet dans le quel remplir sa trace. 
-		//Astuce pour lui faire conna�tre des classes �trang�es par la m�me occasion.
-		//Le nom � rallonge permet d'�viter un doublon de variables
+		//On donne a l'interpreteur un objet dans le quel remplir sa trace. 
+		//Astuce pour lui faire connaitre des classes etrangeres par la meme occasion.
+		//Le nom a rallonge permet d'eviter un doublon de variables
 		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN);
 		
-		//Impl�mentation du mot cl� assert qui n'est pas g�r� par BeanShell
+		//Implementation du mot cle assert qui n'est pas gere par BeanShell
 		interpreter.eval("assert(boolean condition) { "
 				+ 			"if (!condition) "
 				+ 				"throw new AssertionError();"
@@ -83,19 +83,19 @@ public class BeanShell {
 		// On ajoute l'input, ici le 5 sera ensuite en dynamique.
 		interpreter.set("input", input);
 
-		// On r�cup�re la classe o� se trouve la m�thode challenge qui nous int�resse
+		// On recupere la classe ou se trouve la mehode challenge qui nous interesse
 		File tempFile = new File("");
 		String filePath = tempFile.getAbsolutePath() + "/src/challenges/" + challengeName + ".java";
 		String javaCode = readFile(filePath);
 
-		// On r�cup�re la m�thode challenge sous forme de nodes
+		// On recupere la methode challenge sous forme de nodes
 		List<Node> nodes = getChallengeMethodToNodes(javaCode);
 		
-		// On transforme le code de la m�thode pour pouvoir cr�er la trace au fur et � mesure
+		// On transforme le code de la methode pour pouvoir creer la trace au fur et a mesure
 		List<Node> newnodes = NodeNavigator.transformNodes(nodes, "");
 			
 		int line=0;
-		// On ex�cute le code bloc par bloc
+		// On execute le code bloc par bloc
 		for (Node n : newnodes) {
 			//System.out.println(n);
 			line = n.getBegin().get().line;
@@ -115,7 +115,7 @@ public class BeanShell {
 			}
 		}
 		
-		// On r�cup�re la trace enti�re et on la retourne	
+		// On recupere la trace entiere et on la retourne	
 		List<State> states = new ArrayList<State>();
 		if(input instanceof String){
 			inputValue="\""+input+"\"";
@@ -180,8 +180,8 @@ public class BeanShell {
 	}
 
 	/**
-	 * M�thode de r�cup�ration de la m�thode qui nous int�resse depuis la classe
-	 * compl�te
+	 * Methode de recuperation de la methode qui nous interesse depuis la classe
+	 * complete
 	 * 
 	 * @param fullClasslin
 	 * @return
