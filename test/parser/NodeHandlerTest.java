@@ -21,7 +21,7 @@ public class NodeHandlerTest {
 		List<Node> nodes = NodeHandler.expressionStmtHandler(e, "");
 	
 		assertEquals(2, nodes.size());
-		assertTrue(nodes.get(1).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement("));
+		assertTrue(nodes.get(1).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State("));
 		assertTrue(nodes.get(1).toString().contains("hello"));
 	}
 	
@@ -31,11 +31,10 @@ public class NodeHandlerTest {
 	
 		List<Node> nodes = NodeHandler.loopStmtHandler(e, "");
 	
-		assertEquals(1, nodes.size());
+		assertEquals(2, nodes.size());
 		assertEquals(4, nodes.get(0).getChildNodes().size());
-		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement("));
+		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State("));
 		assertTrue(nodes.get(0).toString().contains("hello"));
-		assertTrue(nodes.get(0).toString().toString().contains("\"i=\" + i + \";\""));
 	}
 	
 	@Test
@@ -44,11 +43,10 @@ public class NodeHandlerTest {
 	
 		List<Node> nodes = NodeHandler.loopStmtHandler(e, "");
 	
-		assertEquals(1, nodes.size());
+		assertEquals(2, nodes.size());
 		assertEquals(3, nodes.get(0).getChildNodes().size());
-		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement("));
+		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State("));
 		assertTrue(nodes.get(0).toString().contains("hello"));
-		assertTrue(nodes.get(0).toString().toString().contains("\"i=\" + i + \";\""));
 	}
 	
 	@Test
@@ -59,7 +57,7 @@ public class NodeHandlerTest {
 	
 		assertEquals(1, nodes.size());
 		assertEquals(3, nodes.get(0).getChildNodes().size());
-		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement("));
+		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State("));
 		assertTrue(nodes.get(0).toString().contains("hello"));
 	}
 	
@@ -71,7 +69,7 @@ public class NodeHandlerTest {
 	
 		assertEquals(1, nodes.size());
 		assertEquals(2, nodes.get(0).getChildNodes().size());
-		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement("));
+		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State("));
 		assertTrue(nodes.get(0).toString().contains("hello"));
 	}
 	
@@ -83,7 +81,7 @@ public class NodeHandlerTest {
 	
 		assertEquals(1, nodes.size());
 		assertEquals(4, nodes.get(0).getChildNodes().size());
-		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement("));
+		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State("));
 		assertTrue(nodes.get(0).toString().contains("hello"));
 	}
 	
@@ -95,7 +93,7 @@ public class NodeHandlerTest {
 	
 		assertEquals(1, nodes.size());
 		assertEquals(2, nodes.get(0).getChildNodes().size());
-		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new CECElement("));
+		assertTrue(nodes.get(0).toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State("));
 		assertTrue(nodes.get(0).toString().contains("hello"));
 	}
 	
