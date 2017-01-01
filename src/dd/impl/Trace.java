@@ -24,8 +24,7 @@ public class Trace {
 		this.states=s;
 		this.fail=fail;
 	}
-	
-	
+		
 	public String toString(){
 		StringBuilder s = new StringBuilder();
 		for(State st: states){
