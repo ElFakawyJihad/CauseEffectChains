@@ -8,7 +8,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 /**
- * Permet d'itérer à haut niveau dans les nodes, ici on récupère une méthode en
+ * Permet d'itï¿½rer ï¿½ haut niveau dans les nodes, ici on rï¿½cupï¿½re une mï¿½thode en
  * particulier.
  * 
  * @author Quentin
@@ -22,7 +22,7 @@ public class ChallengeVisitor extends VoidVisitorAdapter {
 
 	@Override
 	public void visit(MethodDeclaration n, Object arg) {
-		if (n.getName().toString().equals("challenge")) {
+		if ("challenge".equals(n.getName().toString())) {
 			challengeMethod = n.toString();
 			nodeList = n.getBody().get().getChildNodes();
 			inputName = ((Parameter)n.getParameters().get(0)).getName().toString();
