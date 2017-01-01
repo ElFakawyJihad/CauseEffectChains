@@ -180,6 +180,7 @@ public class BeanShell {
 			throw e;
 		}finally{
 			sc.close();
+			
 		}
 	}
 
