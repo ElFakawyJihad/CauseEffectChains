@@ -26,15 +26,15 @@ public class SizeChallenge implements Challenge<String> {
 	public void challenge(String input) {		
 		String tmp = "titi";
 		
-		int size = tmp.length();//NO SONAR
+		int size = tmp.length();//NOSONAR
 		
 		for (int i = 0; i < 2; i++) {
-			size=i;//NO SONAR
+			size=i;//NOSONAR
 		}
 		
 		tmp = input;
 		
-		size = tmp.length();//NO SONAR
+		size = tmp.length();//NOSONAR
 	}
 
 }
