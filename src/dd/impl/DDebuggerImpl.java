@@ -1,5 +1,6 @@
 package dd.impl;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +18,14 @@ public class DDebuggerImpl implements DDebugger<Object> {
 		ArrayList<Trace> traces=new ArrayList<Trace>();
 		for (Object input: c.getInputs()) {
 				System.out.println("_____ Execution avec input : "+input);
-				Trace trace =  getTrace(input, c.getClass().getSimpleName());
-				traces.add( trace );
+				Trace trace;
+				try {
+					trace = getTrace(input, c.getClass().getSimpleName());
+					traces.add( trace );
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				//c.challenge(input);
 		}
 		
@@ -60,8 +67,9 @@ public class DDebuggerImpl implements DDebugger<Object> {
 	 * @param input
 	 * @param challengeName
 	 * @return
+	 * @throws FileNotFoundException 
 	 */
-	private Trace getTrace(Object input, String challengeName) {
+	private Trace getTrace(Object input, String challengeName) throws FileNotFoundException {
 		BeanShell beanshell = new BeanShell(challengeName);
 		Trace trace =null;
 
