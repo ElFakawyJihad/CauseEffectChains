@@ -75,8 +75,9 @@ public class BeanShell {
 	 * @param input
 	 * @return
 	 * @throws EvalError
+	 * @throws FileNotFoundException 
 	 */
-	public Trace getTrace(Object input) throws EvalError {
+	public Trace getTrace(Object input) throws EvalError, FileNotFoundException {
 		initInterpreter();
 
 		// On ajoute l'input, ici le 5 sera ensuite en dynamique.
@@ -167,14 +168,14 @@ public class BeanShell {
 	 * @param fileName
 	 * @return
 	 */
-	public String readFile(String fileName) {
+	public String readFile(String fileName) throws FileNotFoundException {
 		try {
 			Scanner sc=new Scanner(new File(fileName));
 			String retour=sc.useDelimiter("\\Z").next();
 			sc.close();
 			return retour;
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			throw new FileNotFoundException(e.getMessage());
 		}
 	}
 
