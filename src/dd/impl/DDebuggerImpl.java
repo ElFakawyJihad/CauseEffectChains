@@ -23,7 +23,7 @@ public class DDebuggerImpl implements DDebugger<Object> {
 					trace = getTrace(input, c.getClass().getSimpleName());
 					traces.add( trace );
 				} catch (FileNotFoundException e) {
-					throw new RuntimeException(e);
+					throw new FileNotFoundRuntimeException();
 				}
 				//c.challenge(input);
 		}
