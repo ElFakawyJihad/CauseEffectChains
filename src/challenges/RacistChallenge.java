@@ -32,7 +32,7 @@ public class RacistChallenge implements Challenge<Color> {
 	@Override
 	public void challenge(Color input) {		
 		int blueLevel = input.getBlue();
-		assert (blueLevel != 0);
+		assert blueLevel != 0;
 	}
 
 }
