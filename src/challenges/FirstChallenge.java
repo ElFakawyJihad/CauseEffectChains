@@ -39,6 +39,7 @@ public class FirstChallenge implements Challenge<Integer> {
 			input1 /= 0;
 		}
 		
-		bonjour += 1;
+		//Erreur volontaire pour le challenge ,donc suppression de l'analyse Sonar
+		bonjour += 1; //NOSONAR
 	}
 }
