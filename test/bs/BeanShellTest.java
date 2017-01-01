@@ -45,16 +45,14 @@ public class BeanShellTest {
 		assertEquals("Bonjour. Je suis un essai.", readedFile);
 	}
 	
-	@Test
+	@Test(expected=FileNotFoundException.class)
 	public void test_readFile_exception() throws FileNotFoundException {
 		BeanShell bs = new BeanShell();
 		
 		File tempFile = new File("");
 		String filePath = tempFile.getAbsolutePath() + "/test/bs/iDontExist.lol";
 		
-		String readedFile = bs.readFile(filePath);
-
-		assertEquals("", readedFile);
+		bs.readFile(filePath);
 	}
 
 	@Test

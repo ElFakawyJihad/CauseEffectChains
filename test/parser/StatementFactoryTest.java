@@ -9,10 +9,11 @@ public class StatementFactoryTest {
 	@Test
 	public void test_addInputToList_no_iteration_42() {
 		Statement s = StatementFactory.addInputToList("666", "42", "reponse", "");
+		assertTrue(s.toString().contains("DEBUG_CAUSE_EFFECT_CHAIN.add(new State"));
 		assertTrue(s.toString().contains("42"));
 		assertTrue(s.toString().contains("666"));
 		assertTrue(s.toString().contains("reponse"));
-	}
+	}	
 	@Test
 	public void test_addInputToList_no_iteration_666() {
 		Statement s = StatementFactory.addInputToList("666", "42", "reponse", "");
