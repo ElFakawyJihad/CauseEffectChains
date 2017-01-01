@@ -30,7 +30,7 @@ public class TestChallenge implements Challenge<Integer> {
 
 	@Override
 	public void challenge(Integer input) {
-		int hello = input * 2;
-		assert (hello > 4);
+		int hello = input * 2;//NOSONAR
+		assert hello > 4;
 	}
 }

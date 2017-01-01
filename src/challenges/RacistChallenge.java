@@ -33,7 +33,7 @@ public class RacistChallenge implements Challenge<Color> {
 
 	public void challenge(Color input) {
 		if (input != null) {
-			int blueLevel = input.getBlue();
+			int blueLevel = input.getBlue();//NOSONAR
 			assert blueLevel != 0;
 		}
 	}
