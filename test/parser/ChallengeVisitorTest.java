@@ -61,7 +61,6 @@ public class ChallengeVisitorTest {
 
 		ChallengeVisitor visitor = new ChallengeVisitor();
 		visitor.visit(cu, null);
-		System.out.println();
 		assertTrue(visitor.challengeMethod.contains("int hello = input * 2;"));
 	}
 	@Test 
@@ -75,7 +74,7 @@ public class ChallengeVisitorTest {
 
 		ChallengeVisitor visitor = new ChallengeVisitor();
 		visitor.visit(cu, null);
-		assertEquals(1, visitor.nodeList.size());
+		assertEquals(2, visitor.nodeList.size());
 	}
 	
 	@Test

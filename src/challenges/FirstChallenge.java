@@ -37,7 +37,6 @@ public class FirstChallenge implements Challenge<Integer> {
 			input1 += i;
 			
 			input1 /= 0;
-			
 		}
 		
 		bonjour += 1;

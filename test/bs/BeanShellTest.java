@@ -15,6 +15,7 @@ import org.junit.Test;
 import bsh.EvalError;
 import dd.impl.CECElement;
 import dd.impl.State;
+import dd.impl.Trace;
 
 public class BeanShellTest {
 
@@ -75,32 +76,36 @@ public class BeanShellTest {
 		
 	}
 
-	/*@Test
-	public void test_getTrace() throws EvalError {
+	@Test
+	public void test_getTrace() throws EvalError, FileNotFoundException {
 		BeanShell bs = new BeanShell("TestChallenge");
 		
-		List<CECElement> trace = bs.getTrace(1);
+		Trace trace = bs.getTrace(1);
 		
-		assertEquals(1, trace.size());
+		assertEquals(2, trace.states.size());
 		
-		CECElement c = trace.get(0);
+		State s = trace.states.get(0);
+		State s2 = trace.states.get(1);
 		
-		assertEquals("33", c.getLine());
-		assertEquals("2", c.getVariable());
-	}*/
+		assertEquals(32, s.lineNumber);
+		assertEquals(1, s.varCurrent.value);
+		
+		assertEquals(33, s2.lineNumber);
+		assertEquals(2, s2.varCurrent.value);
+	}
 	
-	/*@Test
-	public void test_printTrace() throws EvalError {
+	@Test
+	public void test_printTrace() throws EvalError, FileNotFoundException {
 		BeanShell bs = new BeanShell("TestChallenge");
 		
-		List<State> trace = bs.getTrace(1);
+		Trace trace = bs.getTrace(1);
 		
-		bs.printTrace(trace);
+		bs.printTrace(trace.states);
 		
 		assertTrue(outContent.toString().contains("_____ TRACE BEGIN _____"));
 		assertTrue(outContent.toString().contains("_____ TRACE ENDS _____"));
-		assertTrue(outContent.toString().contains("Line [33]"));
-		assertTrue(outContent.toString().contains("2	is the new value of \"hello\""));
-	}*/
+		assertTrue(outContent.toString().contains("[33]"));
+		assertTrue(outContent.toString().contains("hello"));
+	}
 	
 }
