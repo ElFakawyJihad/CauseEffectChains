@@ -20,11 +20,12 @@ public class CEC implements CauseEffectChain {
 	}
 	
 	public String toString(){
-		String s ="_____ CAUSE EFFECT CHAIN _____\n";
+		StringBuilder s=new StringBuilder();
+		s.append("_____ CAUSE EFFECT CHAIN _____\n");
 		for(ChainElement c : chain){
-			s=s+"Line ["+c.getLine()+"] : "+c.getDescription()+" = "+c.getVariable()+"\n";
+			s.append("Line ["+c.getLine()+"] : "+c.getDescription()+" = "+c.getVariable()+"\n");
 		}
-		return s;
+		return s.toString();
 	}
 
 }
