@@ -78,6 +78,9 @@ public class NodeNavigator {
 			case "SwitchStmt":
 				newNodes.addAll(NodeHandler.switchStmtHandler(cNode, nameOfLoopIterationVar));
 				break;
+			case "AssertStmt":
+				newNodes.addAll(NodeHandler.assertStmtHandler(cNode, nameOfLoopIterationVar));
+				break;
 			default:
 				newNodes.add(cNode);
 				break;

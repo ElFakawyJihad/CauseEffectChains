@@ -2,6 +2,7 @@ package parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -12,6 +13,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithBody;
+import com.github.javaparser.ast.stmt.AssertStmt;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.CatchClause;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -36,13 +38,13 @@ public class NodeHandler {
 		
 		String varName = handleSubExpression(e.getExpression());
 		
-		int line = cNode.getBegin().get().line; // On r�cup�re la ligne
+		int line = cNode.getBegin().get().line; // On recupere la ligne
 
 		newNodes.add(cNode); // On ajoute la Node de base
 		
 		Statement t = StatementFactory.addInputToList(String.valueOf(line), varName, varName, nameOfLoopIterationVar);
 		
-		// On ajoute la nouvelle Node, qui consiste � remplir la trace
+		// On ajoute la nouvelle Node, qui consiste a remplir la trace
 		newNodes.add((Node) t); 
 		
 		return newNodes;
@@ -52,11 +54,11 @@ public class NodeHandler {
 		List<Node> newNodes = new ArrayList<Node>();
 		
 		
-		//On r�cup�re les instructions dans la boucle
+		//On recupere les instructions dans la boucle
 		BlockStmt blockStmt = (BlockStmt) ((NodeWithBody) cNode).getBody();
 		String nameOfLoopIterateVar="";
 
-		//La r�cup�ration est diff�rente selon les types de boucles.
+		//La recuperation est differente selon les types de boucles.
 		if(cNode instanceof ForeachStmt) {
 			nameOfLoopIterateVar = nameOfLoopIterationVar+handleSubExpression((Expression) cNode.getChildNodes().get(0));
 		} else if (cNode instanceof ForStmt) {
@@ -64,7 +66,7 @@ public class NodeHandler {
 		}
 		
 		
-		//On ajoute une var de loop it�ration pour afficher les it�rations de boucles
+		//On ajoute une var de loop iteration pour afficher les iterations de boucles
 		loopHandleBlockStmt(blockStmt, nameOfLoopIterateVar+";");
 
 		newNodes.add(cNode);
@@ -86,7 +88,7 @@ public class NodeHandler {
 	public static void loopHandleBlockStmt(Node cNode, String nameOfLoopIterationVar) throws EvalError {
 		BlockStmt blockStmt = (BlockStmt) cNode;
 
-		//On alt�re chacune de ses nodes recursivement
+		//On altere chacune de ses nodes recursivement
 		List<Node> tempNodes = NodeNavigator.transformNodes(blockStmt.getChildNodes(), nameOfLoopIterationVar); 
 
 		//On efface le bloc pour mettre les nouvelles nodes dedans
@@ -103,8 +105,8 @@ public class NodeHandler {
 	}
 	
 	/**
-	 * Permet de g�rer les if. Prend en compte le cas des if sans accolade
-	 * mais je n'ai pas encore r�ussi � ajouter la trace pour l'expression dans ce if.
+	 * Permet de gerer les if. Prend en compte le cas des if sans accolade
+	 * mais je n'ai pas encore reussi a ajouter la trace pour l'expression dans ce if.
 	 * @param cNode
 	 * @return
 	 * @throws EvalError
@@ -115,12 +117,12 @@ public class NodeHandler {
 		IfStmt ifStmt = (IfStmt)cNode;
 		Node ifBlockNode = ifStmt.getChildNodes().get(1);
 		
-		//On r�cup�re les instructions dans la boucle		
+		//On recupere les instructions dans la boucle		
 		if(ifBlockNode instanceof BlockStmt) {			
 			handleBlockStmt(ifBlockNode, nameOfLoopIterationVar);
 			newNodes.add(ifStmt);
-		} else { //TODO, C'est compliqu� � g�rer les if sans accolade, pas de trace pour l'instant
-			newNodes.add(ifStmt);
+		} else { //TODO, C'est complique a gerer les if sans accolade, pas de trace pour l'instant
+			//newNodes.add(ifStmt);
 		}
 		
 		//Gestion du else
@@ -128,8 +130,9 @@ public class NodeHandler {
 			Node elseBlockNode = ifStmt.getChildNodes().get(2);
 			if(elseBlockNode instanceof BlockStmt) {			
 				handleBlockStmt(elseBlockNode, nameOfLoopIterationVar);
-			} else { //TODO, C'est compliqu� � g�rer les else sans accolade, pas de trace pour l'instant
-				newNodes.add(ifStmt);
+			} else { //TODO, C'est complique a gerer les else sans accolade, pas de trace pour l'instant
+				//List<Node> nodess=NodeNavigator.transformNode(elseBlockNode, 0, nameOfLoopIterationVar); 
+				//newNodes.add(ifStmt);
 			}
 		}
 		
@@ -137,7 +140,7 @@ public class NodeHandler {
 	}
 	
 	/**
-	 * Permet de g�rer un bloc.
+	 * Permet de gerer un bloc.
 	 * @param cNode
 	 * @throws EvalError
 	 */
@@ -171,6 +174,17 @@ public class NodeHandler {
 		return newNodes;
 	}
 	
+	public static List<Node> assertStmtHandler(Node cNode, String nameOfLoopIterationVar) throws EvalError {
+		List<Node> newNodes = new ArrayList<Node>();
+		
+		AssertStmt assertNode = (AssertStmt)cNode;
+		AssertStmt newAssertNode = (AssertStmt)JavaParser.parseStatement("assert("+assertNode.getCheck()+");");
+		
+		newNodes.add(newAssertNode);
+		
+		return newNodes;
+	}
+	
 	public static List<Node> switchStmtHandler(Node cNode, String nameOfLoopIterationVar) throws EvalError {
 		List<Node> newNodes = new ArrayList<>();
 		SwitchStmt switchStmt = (SwitchStmt) cNode;
@@ -194,9 +208,9 @@ public class NodeHandler {
 	}
 	
 	/**
-	 * Pour g�rer une expression, qui est un cran en dessous de ExpressionStmt
-	 * niveau hi�rarchie. Permet surtout de r�cup�rer le nom de la variable
-	 * concern�e lors d'assignations simples.
+	 * Pour gerer une expression, qui est un cran en dessous de ExpressionStmt
+	 * niveau hierarchie. Permet surtout de recuperer le nom de la variable
+	 * concernee lors d'assignations simples.
 	 * 
 	 * @param e
 	 * @return

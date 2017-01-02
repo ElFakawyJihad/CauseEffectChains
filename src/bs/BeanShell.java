@@ -65,9 +65,10 @@ public class BeanShell {
 		// occasion.
 		// Le nom a rallonge permet d'eviter un doublon de variables
 		interpreter.set("DEBUG_CAUSE_EFFECT_CHAIN", DEBUG_CAUSE_EFFECT_CHAIN);
-
+		
 		// Implementation du mot cle assert qui n'est pas gere par BeanShell
-		interpreter.eval("assert(boolean condition) { " + "if (!condition) " + "throw new AssertionError();" + "}");
+		interpreter.eval("assert(boolean condition) { " + "if (!condition) " + "throw new Exception();" + "}");
+
 	}
 
 	/**
@@ -125,6 +126,7 @@ public class BeanShell {
 		List<State> states = new ArrayList<State>();
 		if (input instanceof String) {
 			inputValue = "\"" + input + "\"";
+
 		} else {
 			inputValue = input;
 		}
