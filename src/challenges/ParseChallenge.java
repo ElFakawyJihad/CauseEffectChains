@@ -9,8 +9,7 @@ public class ParseChallenge  implements Challenge<String> {
 
 	@Override
 	public Class<? extends String> getInputFormat() {
-		// TODO Auto-generated method stub
-		return null;
+		return String.class;
 	}
 
 	@Override
