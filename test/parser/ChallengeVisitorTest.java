@@ -20,7 +20,7 @@ public class ChallengeVisitorTest {
 		File tempFile = new File("");
 		String filePath = tempFile.getAbsolutePath() + "/src/challenges/TestChallenge.java";
 		CompilationUnit cu = JavaParser.parse(bs.readFile(filePath));
-		ChallengeVisitor visitor = new ChallengeVisitor();
+		ChallengeVisitor visitor = new ChallengeVisitor(bs.interpreter);
 		visitor.visit(cu, null);
 		assertEquals("input", visitor.inputName);
 	}
@@ -33,7 +33,7 @@ public class ChallengeVisitorTest {
 		
 		CompilationUnit cu = JavaParser.parse(bs.readFile(filePath));
 
-		ChallengeVisitor visitor = new ChallengeVisitor();
+		ChallengeVisitor visitor = new ChallengeVisitor(bs.interpreter);
 		visitor.visit(cu, null);
 		assertTrue(visitor.challengeMethod.contains("@Override"));
 	}
@@ -46,7 +46,7 @@ public class ChallengeVisitorTest {
 		
 		CompilationUnit cu = JavaParser.parse(bs.readFile(filePath));
 
-		ChallengeVisitor visitor = new ChallengeVisitor();
+		ChallengeVisitor visitor = new ChallengeVisitor(bs.interpreter);
 		visitor.visit(cu, null);
 		assertTrue(visitor.challengeMethod.contains("public void challenge(Integer input)"));
 	}
@@ -59,7 +59,7 @@ public class ChallengeVisitorTest {
 		
 		CompilationUnit cu = JavaParser.parse(bs.readFile(filePath));
 
-		ChallengeVisitor visitor = new ChallengeVisitor();
+		ChallengeVisitor visitor = new ChallengeVisitor(bs.interpreter);
 		visitor.visit(cu, null);
 		assertTrue(visitor.challengeMethod.contains("int hello = input * 2;"));
 	}
@@ -72,7 +72,7 @@ public class ChallengeVisitorTest {
 		
 		CompilationUnit cu = JavaParser.parse(bs.readFile(filePath));
 
-		ChallengeVisitor visitor = new ChallengeVisitor();
+		ChallengeVisitor visitor = new ChallengeVisitor(bs.interpreter);
 		visitor.visit(cu, null);
 		assertEquals(2, visitor.nodeList.size());
 	}
@@ -86,7 +86,7 @@ public class ChallengeVisitorTest {
 		
 		CompilationUnit cu = JavaParser.parse(bs.readFile(filePath));
 
-		ChallengeVisitor visitor = new ChallengeVisitor();
+		ChallengeVisitor visitor = new ChallengeVisitor(bs.interpreter);
 		visitor.visit(cu, null);
 		assertEquals("int hello = input * 2;", visitor.nodeList.get(0).toString());
 		

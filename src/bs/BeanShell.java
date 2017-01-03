@@ -82,9 +82,6 @@ public class BeanShell {
 	public Trace getTrace(Object input) throws EvalError, FileNotFoundException {
 		initInterpreter();
 
-		// On ajoute l'input, ici le 5 sera ensuite en dynamique.
-		interpreter.set("input", input);
-
 		// On recupere la classe ou se trouve la mehode challenge qui nous
 		// interesse
 		File tempFile = new File("");
@@ -93,6 +90,9 @@ public class BeanShell {
 
 		// On recupere la methode challenge sous forme de nodes
 		List<Node> nodes = getChallengeMethodToNodes(javaCode);
+		
+		// On ajoute l'input
+		interpreter.set(inputName, input);
 
 		// On transforme le code de la methode pour pouvoir creer la trace au
 		// fur et a mesure
@@ -105,12 +105,12 @@ public class BeanShell {
 			line = n.getBegin().get().line;
 
 			try {
-				interpreter.eval(n.toString());
+				String code = n.toString();
+				
+				code = code.replaceAll("<.*?>", ""); //On retire la genericite
+				
+				interpreter.eval(code);
 			} catch (EvalError e) {
-				System.out.println(e.getMessage());
-				// line = line de la boucle + line dans le block de la boucle -
-				// 1
-
 				String cause;
 				if (e.getCause() == null)
 					cause = "Assertion Exception";
@@ -205,7 +205,7 @@ public class BeanShell {
 	public List<Node> getChallengeMethodToNodes(String fullClass) {
 		CompilationUnit cu = JavaParser.parse(fullClass);
 
-		ChallengeVisitor visitor = new ChallengeVisitor();
+		ChallengeVisitor visitor = new ChallengeVisitor(interpreter);
 		visitor.visit(cu, null);
 		inputName = visitor.inputName;
 		challengeMethod = visitor.challengeMethod;
