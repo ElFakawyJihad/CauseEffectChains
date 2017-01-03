@@ -2,9 +2,11 @@ package parser;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import bsh.EvalError;
@@ -38,8 +40,20 @@ public class ChallengeVisitor extends VoidVisitorAdapter {
 			//ligne de la declaration de la methode = ligne des param
 			line = n.getParameters().get(0).getBegin().get().line;
 		} else { //Si ce n'est pas le challenge, on interprete tout de même la méthode
-			try {
-				n.getAnnotations().clear();				
+			try {				
+				n.getAnnotations().clear();
+				
+				List<Node> nodes = n.getBody().get().getChildNodes();
+				List<Node> nodesWithTrace = NodeNavigator.transformNodes(nodes, "");
+
+				String stringBlockWithTrace = "{";				
+				for(Node nodeWithTrace : nodesWithTrace) {
+					stringBlockWithTrace += nodeWithTrace.toString();
+				}				
+				stringBlockWithTrace += "}";
+				
+				BlockStmt newBlock = JavaParser.parseBlock(stringBlockWithTrace);				
+				n.setBody(newBlock);				
 				String method = n.toString();
 				
 				method = method.replaceAll("<.*?>", ""); //On retire la genericite
