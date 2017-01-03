@@ -25,18 +25,12 @@ public class FirstChallenge implements Challenge<Integer> {
 	@Override
 	public void challenge(Integer input) {
 		int bonjour = 5;
-		int input1=input+10;
-		
-		input1 += 10; 
-
-		
-		input1 /= 2;	
+		int input1=bonjour+10;
+			
 		
 		for (int i = 0; i < 5; i++) {
 			
-			input1 += i;
-			
-			input1 /= 0;
+			input1 /= input;
 		}
 		
 		//Erreur volontaire pour le challenge ,donc suppression de l'analyse Sonar
